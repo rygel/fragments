@@ -5,12 +5,12 @@
     <artifactId>fragments</artifactId>
     <groupId>io.andromeda</groupId>
     <packaging>jar</packaging>
-    <version>0.0.10-SNAPSHOT</version>
+    <version>0.0.10</version>
 
     <parent>
         <artifactId>fragments-parent</artifactId>
         <groupId>io.andromeda</groupId>
-        <version>0.0.10-SNAPSHOT</version>
+        <version>0.0.10</version>
     </parent>
 
     <dependencies>
