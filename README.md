@@ -1,6 +1,6 @@
 Lyricist
 =========
-[![Maven Central](http://img.shields.io/maven-central/v/io.andromeda/lyricist.svg)](http://search.maven.org/#search|ga|1|io.andromeda)
+[![Maven Central](http://img.shields.io/maven-central/v/io.andromeda/fragments.svg)](http://search.maven.org/#search|ga|1|io.andromeda)
 
 A blog/static pages engine for the [Pippo](https://github.com/decebals/pippo) Java Micro Framework. It is inspired by
  [Poet](http://jsantell.github.io/poet/). It supports the following features:
