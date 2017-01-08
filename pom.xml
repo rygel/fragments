@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.andromeda</groupId>
     <artifactId>fragments-parent</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>fragments-parent</name>
     <description>A Pippo application</description>
