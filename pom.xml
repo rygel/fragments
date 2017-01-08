@@ -54,7 +54,7 @@
     </distributionManagement>
 
     <scm>
-      <connection>scm:git:https://github.com/rygel/fragments.git</connection>
+      <connection>https://github.com/rygel/fragments.git</connection>
       <developerConnection>scm:git:https://github.com/rygel/fragments.git</developerConnection>
       <url>git@github.com/rygel/fragments.git</url>
       <tag>release-0.0.3</tag>
