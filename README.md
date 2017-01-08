@@ -1,8 +1,8 @@
-Lyricist
+Fragments
 =========
 [![Maven Central](http://img.shields.io/maven-central/v/io.andromeda/fragments.svg)](http://search.maven.org/#search|ga|1|io.andromeda)
 
-A blog/static pages engine for the [Pippo](https://github.com/decebals/pippo) Java Micro Framework. It is inspired by
+A pages collection engine for the [Pippo](https://github.com/decebals/pippo) Java Micro Framework. It is inspired by
  [Poet](http://jsantell.github.io/poet/). It supports the following features:
 - [Author Pages](fragments-demo/README.md#author_pages)
 - [Static Pages](fragments-demo/README.md#static_pages)

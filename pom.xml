@@ -7,7 +7,6 @@
     <version>0.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>fragments-parent</name>
-    <description>A Pippo application</description>
 
     <modules>
         <module>fragments</module>
@@ -306,28 +305,55 @@
     </reporting>
 
         <profiles>
-        <profile>
-            <id>main</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <packaging.type>jar</packaging.type>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>ro.pippo</groupId>
-                    <artifactId>pippo-jetty</artifactId>
-                    <version>${pippo.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>war</id>
-            <properties>
-                <packaging.type>war</packaging.type>
-            </properties>
-        </profile>
+            <profile>
+                <id>main</id>
+                <activation>
+                    <activeByDefault>true</activeByDefault>
+                </activation>
+                <properties>
+                    <packaging.type>jar</packaging.type>
+                </properties>
+                <dependencies>
+                    <dependency>
+                        <groupId>ro.pippo</groupId>
+                        <artifactId>pippo-jetty</artifactId>
+                        <version>${pippo.version}</version>
+                    </dependency>
+                </dependencies>
+            </profile>
+            <profile>
+                <id>war</id>
+                <properties>
+                    <packaging.type>war</packaging.type>
+                </properties>
+            </profile>
+            <profile>
+                <id>release-sign-artifacts</id>
+                <activation>
+                    <property>
+                        <name>performRelease</name>
+                        <value>true</value>
+                    </property>
+                </activation>
+                <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-gpg-plugin</artifactId>
+                            <version>1.5</version>
+                            <executions>
+                                <execution>
+                                    <id>sign-artifacts</id>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>sign</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </build>
+            </profile>
     </profiles>
 
 </project>
