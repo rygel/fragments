@@ -6,6 +6,8 @@
     <groupId>io.andromeda</groupId>
     <packaging>jar</packaging>
     <version>0.0.11-SNAPSHOT</version>
+    <url>http://andromeda.io/code/fragments</url>
+    <description>A pages collection engine for the Pippo Java Micro Framework.</description>
 
     <parent>
         <artifactId>fragments-parent</artifactId>

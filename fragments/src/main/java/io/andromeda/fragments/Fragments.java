@@ -41,6 +41,17 @@ public class Fragments {
         this(application, name, urlPath, dataDirectory, "", "", null);
     }
 
+    /**
+     * Main class to hold all fragments and to create all routes automatically.
+     *
+     * @param application Reference to PippoApplication. Needed to create the routes for the files.
+     * @param name Name of the Fragments instance. Used for error messages to aid debugging in case files cannot be loaded properly.
+     * @param urlPath Path of the base URL. Used for the automatically created routes. Full path will be urlPath/slug.
+     * @param dataDirectory Directory containing the Markdown files.
+     * @param overviewTemplate Template to be used for the overview page, e.g urlPath
+     * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside the front matter.
+     * @param defaultContext Default context to be used when rending the overview and the individual page. Can be extended via the front matter.
+     */
     public Fragments(Application application, String name, String urlPath, String dataDirectory, String overviewTemplate, String defaultTemplate, Map<String, Object> defaultContext) {
         this.application = application;
         this.name = name;
