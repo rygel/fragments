@@ -18,13 +18,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static ro.pippo.core.util.ClasspathUtils.locateOnClasspath;
 
 /**
  * @author Alexander Brandt
  */
-public class Fragment {
+public class Fragment implements Comparable<Fragment> {
     /** The logger instance for this class. */
     private final static Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
 
@@ -34,21 +35,31 @@ public class Fragment {
 
     private String filename;
     private Path path;
-    public boolean isInvisible;
+    public boolean visible = false;
     public String template;
     public String title;
     public String slug;
     public String url;
+    public String full_url;
+    public String full_url_encoded;
     public String content;
+    public String preview;
+    public int order;
+    public String defaultLanguage;
+    public Map<String,String> languages = new TreeMap<>();
+    public Map<String,String> languagesPreview = new TreeMap<>();
+    public Map<String,String> languagesTitles = new TreeMap<>();
 
-    public Fragment(String filename, String baseUrl, String template) {
+    public Fragment(String filename, String baseUrl, String template, String defaultLanguage) {
         this.filename = filename;
         this.template = template;
         this.url = baseUrl;
+        this.full_url = baseUrl;
+        this.defaultLanguage = defaultLanguage;
         try {
             readFile();
         } catch (Exception ex) {
-            LOGGER.error("Error reading file (" + filename + "): ", ex.getCause());
+            LOGGER.error("Error reading file (" + filename + "): " + ex.toString());
         }
         LOGGER.info("Loaded: " + filename);
     }
@@ -122,7 +133,7 @@ public class Fragment {
 
         interpretFrontMatterGeneral();
         interpretFrontMatterSpecial();
-        parseMarkdown(br);
+        parseMarkdown2(br);
     }
 
     /**
@@ -138,7 +149,7 @@ public class Fragment {
      * General front matter entries, which should always be available.
      */
     private void interpretFrontMatterGeneral() {
-        String fmSlug = (String)frontMatter.get(Constants.SLUG_ID);
+        String fmSlug = (String) frontMatter.get(Constants.SLUG_ID);
         if (fmSlug != null) {
             slug = fmSlug;
         } else {
@@ -148,18 +159,20 @@ public class Fragment {
             frontMatter.put("slug", slug);
         }
         url = url + slug;
+        full_url = full_url + slug;
+
         // Overwrite the default template, when a template is defined in the front matter
         String tempTemplate = (String)frontMatter.get(Constants.TEMPLATE_ID);
         if (tempTemplate != null) {
             template = tempTemplate;
         }
         title = (String)frontMatter.get(Constants.TITLE_ID);
-        if (frontMatter.containsKey(Constants.INVISIBLE_ID)) {
-            String invisible = (String)frontMatter.get(Constants.INVISIBLE_ID);
-            if (invisible.equals("true")) {
-                isInvisible = true;
-            }
+        String visible = (String) frontMatter.getOrDefault(Constants.VISIBLE_ID, "true");
+        if (visible.equals("true")) {
+            this.visible = true;
         }
+        order = (int)frontMatter.getOrDefault(Constants.ORDER_ID, Integer.MIN_VALUE);
+
     }
 
     /**
@@ -185,4 +198,75 @@ public class Fragment {
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         content = renderer.render(document);
     }
+
+    protected void parseMarkdown2(BufferedReader br) throws IOException {
+        String buffer = "";
+        String currentLanguage = defaultLanguage;
+
+        String line = br.readLine();
+        while (line != null) {
+            if (line.matches("--- \\w{2} ---")) {
+                languages.put(currentLanguage, parseMarkdown3(buffer));
+                languagesPreview.put(currentLanguage, parseMarkdown3(extractPreview(buffer)));
+                currentLanguage = line.substring(4, 6);
+                buffer = "";
+            } else if (line.matches("--- \\w{2}-\\w{2} ---")) {
+                languages.put(currentLanguage, parseMarkdown3(buffer));
+                languagesPreview.put(currentLanguage, parseMarkdown3(extractPreview(buffer)));
+                currentLanguage = line.substring(4, 9);
+                buffer = "";
+            } else {
+                buffer = buffer + line;
+            }
+            line = br.readLine();
+            if (line != null) {
+                line = line + "\n";
+            }
+        }
+        languages.put(currentLanguage, parseMarkdown3(buffer));
+        languagesPreview.put(currentLanguage, parseMarkdown3(extractPreview(buffer)));
+    }
+
+    protected String parseMarkdown3(String content) {
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse(content);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        return renderer.render(document);
+    }
+
+    public void update(String language) {
+        if (language == null) {
+            language = defaultLanguage;
+        }
+        content = languages.get(language);
+        preview = languagesPreview.get(language);
+        if (content == null) {
+            content = languages.get(defaultLanguage);
+            preview = languagesPreview.get(defaultLanguage);
+            if (content == null) {
+                content = "No content defined for this language: " + defaultLanguage;
+                preview = "No content defined for this language: " + defaultLanguage;
+            }
+        }
+    }
+
+    private String extractPreview(String content) {
+        //Check if preview is defined inside front Matter
+        //A preview property on a post. The text of this property runs through the appropriate template and be saved as the preview for a post
+        String result = (String)frontMatter.get(Constants.PREVIEW_ID);
+        if (result != null) {
+            return result;
+        }
+        //The last, and most likely easiest, is specifying a readMoreTag option in your Poet configuration, which by default is <!--more-->. Whenever the readMoreTag is found int he post, anything proceeding it becomes the preview. You can set this globally in your Poet config, or specify a readMoreTag property for each post individually
+        result = content.trim();
+        if (result.contains("<!--more-->")) {
+            return result.substring(0, result.indexOf("<!--more-->"));
+        }
+        return "";
+    }
+
+    public int compareTo(Fragment other) {
+        return this.order - other.order;
+    }
+
 }

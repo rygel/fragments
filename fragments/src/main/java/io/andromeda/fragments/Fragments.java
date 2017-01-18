@@ -3,18 +3,24 @@ package io.andromeda.fragments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
+import ro.pippo.core.Languages;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.ClasspathUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,6 +36,7 @@ public class Fragments {
     private List<Fragment> visibleFragments = new ArrayList<Fragment>();
 
     private Application application;
+    private Configuration configuration;
     private String name;
     private String urlPath;
     private String dataDirectory;
@@ -37,8 +44,8 @@ public class Fragments {
     private String defaultTemplate;
     private Map<String, Object> defaultContext;
 
-    public Fragments(Application application, String name, String urlPath, String dataDirectory) {
-        this(application, name, urlPath, dataDirectory, "", "", null);
+    public Fragments(Application application, String name, String urlPath, String dataDirectory, Configuration configuration) {
+        this(application, name, urlPath, dataDirectory, "", "", null, configuration);
     }
 
     /**
@@ -52,7 +59,7 @@ public class Fragments {
      * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside the front matter.
      * @param defaultContext Default context to be used when rending the overview and the individual page. Can be extended via the front matter.
      */
-    public Fragments(Application application, String name, String urlPath, String dataDirectory, String overviewTemplate, String defaultTemplate, Map<String, Object> defaultContext) {
+    public Fragments(Application application, String name, String urlPath, String dataDirectory, String overviewTemplate, String defaultTemplate, Map<String, Object> defaultContext, Configuration configuration) {
         this.application = application;
         this.name = name;
         this.urlPath = urlPath;
@@ -64,8 +71,9 @@ public class Fragments {
         } else {
             this.defaultContext = defaultContext;
         }
+        this.configuration = configuration;
 
-        LOGGER.debug("Creating Fragments.");
+        LOGGER.debug("Creating Fragments for [" + name + "].");
         URL location = ClasspathUtils.locateOnClasspath("io/andromeda/fragments/" + dataDirectory);
 
         if (location == null) {
@@ -102,6 +110,7 @@ public class Fragments {
         }*/
 
         readDirectory(dataDirectory.toString());
+        prepareFragments();
         registerFragments();
     }
 
@@ -118,8 +127,10 @@ public class Fragments {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(directory))) {
             for (Path path : directoryStream) {
                 try {
-                    Fragment fragment = new Fragment(path.normalize().toString(), urlPath, defaultTemplate);
-                    if (!fragment.isInvisible) {
+                    Languages l = application.getLanguages();
+                    String a = l.getRegisteredLanguages().get(0);
+                    Fragment fragment = new Fragment(path.normalize().toString(), urlPath, defaultTemplate, application.getLanguages().getRegisteredLanguages().get(0));
+                    if (fragment.visible) {
                         visibleFragments.add(fragment);
                     }
                     allFragments.add(fragment);
@@ -134,21 +145,21 @@ public class Fragments {
     }
 
     public void registerFragments() {
-        //preparePostings(blog, pattern);
         for (final Fragment fragment : visibleFragments) {
-            //Route checking here?
-            //Router router = application.getRouter();
-            //List<Route> routes = router.getRoutes();
             application.GET(fragment.url, new RouteHandler() {
                 @Override
                 public void handle(RouteContext routeContext) {
+                    //fragment.full_url = urlPath + fragment.frontMatter.get(Constants.SLUG_ID);
                     final Map<String, Object> context = new TreeMap<>(defaultContext);
+                    String lang = routeContext.getParameter("lang").toString();
+                    fragment.update(lang);
                     context.putAll(fragment.context);
-                    context.put(Constants.CONTENT_ID, fragment.content);
-                    context.put(Constants.PAGE_ID, fragment.frontMatter);
+                    context.put(Constants.FRAGMENT_ID, fragment);
                     context.put("overview_url", urlPath);
-                    context.put("fragments", visibleFragments);
+                    context.put("fragments", getVisibleFragmentOrdered(byOrder));
+                    context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
                     context.put("all_fragments", allFragments);
+                    context.put("lang", lang);
 
                     routeContext.render(fragment.template, context);
                 }
@@ -158,12 +169,55 @@ public class Fragments {
         application.GET(route, new RouteHandler() {
             @Override
             public void handle(RouteContext routeContext) {
+                for (Fragment fragment: allFragments) {
+                    fragment.update(routeContext.getParameter("lang").toString());
+                }
                 final Map<String, Object> context = new TreeMap<>(defaultContext);
                 context.put("overview_url", urlPath);
-                context.put("fragments", visibleFragments);
+                context.put("fragments", getVisibleFragmentOrdered(byOrder));
+                context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
                 context.put("all_fragments", allFragments);
                 routeContext.render(overviewTemplate, context);
             }
         });
     }
+
+    /**
+     * Handle
+     */
+    private void prepareFragments(){
+        int counter = 0;
+        for (Fragment fragment: allFragments) {
+            fragment.full_url = configuration.protocol + configuration.domain + fragment.full_url;
+            //Create the URLEncoded  url
+            try {
+                fragment.full_url_encoded = URLEncoder.encode(fragment.full_url_encoded, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                LOGGER.error("Error: Cannot convert URL: " + fragment.url + "! " + e);
+            }
+
+            if (fragment.order == Integer.MIN_VALUE) {
+                fragment.order = counter;
+            }
+            counter++;
+        }
+    }
+
+    public List<Fragment> getVisibleFragmentOrdered(Comparator orderBy) {
+        List<Fragment> result =  new ArrayList(visibleFragments);
+        result.sort(orderBy);
+        return result;
+    }
+
+    public Comparator<Fragment> byOrder = new Comparator<Fragment>() {
+        public int compare(Fragment left, Fragment right) {
+            return left.order - right.order;
+        }
+    };
+
+    public Comparator<Fragment> byTitle = new Comparator<Fragment>() {
+        public int compare(Fragment left, Fragment right) {
+            return left.title.compareToIgnoreCase(right.title);
+        }
+    };
 }
