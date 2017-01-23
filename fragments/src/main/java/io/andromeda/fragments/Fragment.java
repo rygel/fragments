@@ -171,7 +171,7 @@ public class Fragment implements Comparable<Fragment> {
         if (visible.equals("true")) {
             this.visible = true;
         }
-        order = (int)frontMatter.getOrDefault(Constants.ORDER_ID, Integer.MIN_VALUE);
+        order = Integer.parseInt((String)frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
 
     }
 

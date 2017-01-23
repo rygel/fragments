@@ -191,7 +191,7 @@ public class Fragments {
             fragment.full_url = configuration.protocol + configuration.domain + fragment.full_url;
             //Create the URLEncoded  url
             try {
-                fragment.full_url_encoded = URLEncoder.encode(fragment.full_url_encoded, "UTF-8");
+                fragment.full_url_encoded = URLEncoder.encode(fragment.full_url, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 LOGGER.error("Error: Cannot convert URL: " + fragment.url + "! " + e);
             }
