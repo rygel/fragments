@@ -12,8 +12,9 @@ public class FragmentsTest {
 
     @Test
     public void testLanguageFragments() throws Exception {
+        Configuration configuration = Configuration.getDefault();
         String currentPath = System.getProperty("user.dir");
-        Fragment fragment = new Fragment(currentPath + "/src/test/resources/languages/item.md", "/", "", "de");
+        Fragment fragment = new Fragment(currentPath + "/src/test/resources/languages/item.md", "/", "", "de", configuration);
 
         String result = Utilities.removeTrailingSlash("/");
         //assertThat(expected, equalTo(result));
