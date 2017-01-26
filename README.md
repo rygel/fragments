@@ -1,6 +1,7 @@
 Fragments
 =========
 [![Maven Central](http://img.shields.io/maven-central/v/io.andromeda/fragments.svg)](http://search.maven.org/#search|ga|1|io.andromeda)
+[![Javadocs](http://www.javadoc.io/badge/io.andromeda/fragments.svg)](http://www.javadoc.io/doc/io.andromeda/fragments)
 
 A pages collection engine for the [Pippo](https://github.com/decebals/pippo) Java Micro Framework. It is loosely inspired by
  [Poet](http://jsantell.github.io/poet/).
