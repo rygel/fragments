@@ -1,5 +1,6 @@
 package io.andromeda.fragmentsdemo;
 
+import io.andromeda.fragments.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
@@ -38,7 +39,8 @@ public class PippoApplication extends Application {
         });
 
         String currentPath = System.getProperty("user.dir");
-        Fragments fragments = new Fragments(this,"Events", "/posts/", currentPath + "/data/posts", "posts_overview", "post", null);
+        Configuration configuration = new Configuration();
+        Fragments fragments = new Fragments(this,"Events", "/posts/", currentPath + "/data/posts", "posts_overview", "post", null, configuration);
     }
 
 }

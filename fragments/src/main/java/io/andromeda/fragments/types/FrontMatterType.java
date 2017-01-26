@@ -1,4 +1,4 @@
-package io.andromeda.fragments;
+package io.andromeda.fragments.types;
 
 /**
  * @author Alexander Brandt

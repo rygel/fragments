@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
+import io.andromeda.fragments.types.FrontMatterType;
+import io.andromeda.fragments.types.RouteType;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,6 +38,7 @@ public class Fragment implements Comparable<Fragment> {
     protected Map<String,Object> context = new HashMap<>();
     protected FrontMatterType frontMatterType;
 
+    private Configuration configuration;
     private String filename;
     private Path path;
     public boolean visible = false;
@@ -46,11 +52,13 @@ public class Fragment implements Comparable<Fragment> {
     public String preview;
     public int order;
     public String defaultLanguage;
+    public ZonedDateTime dateTime;
     public Map<String,String> languages = new TreeMap<>();
     public Map<String,String> languagesPreview = new TreeMap<>();
     public Map<String,String> languagesTitles = new TreeMap<>();
 
-    public Fragment(String filename, String baseUrl, String template, String defaultLanguage) {
+    public Fragment(String filename, String baseUrl, String template, String defaultLanguage, Configuration configuration) {
+        this.configuration = configuration;
         this.filename = filename;
         this.template = template;
         this.url = baseUrl;
@@ -65,11 +73,11 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     public String getFilename() {
-        return "";
+        return filename;
     }
 
     public String getDirectory() {
-        return "";
+        return path.normalize().toAbsolutePath().toFile().getParent().toString();
     }
 
     protected final void readFile() throws Exception {
@@ -132,8 +140,7 @@ public class Fragment implements Comparable<Fragment> {
         }
 
         interpretFrontMatterGeneral();
-        interpretFrontMatterSpecial();
-        parseMarkdown2(br);
+        parseContent(br);
     }
 
     /**
@@ -156,10 +163,26 @@ public class Fragment implements Comparable<Fragment> {
             String filename2 = FilenameUtils.getName(filename);
             slug = FilenameUtils.removeExtension(filename2);
             slug = Utilities.slugify(slug);
-            frontMatter.put("slug", slug);
+            frontMatter.put(Constants.SLUG_ID, slug);
         }
-        url = url + slug;
-        full_url = full_url + slug;
+        if (configuration.routeType == RouteType.ARTICLES) {
+            url = url + slug;
+            //full_url = full_url + slug;
+        } else {
+            //Do the date handling
+            String date = (String)frontMatter.get(Constants.DATE_ID);
+            if (date == null) {
+                LOGGER.error("Date is not available for a fragment of type Blog!");
+            } else {
+                try {
+                    dateTime = ZonedDateTime.parse(date);
+                } catch (DateTimeParseException e) {
+                    LOGGER.error(e.toString());
+                    dateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+                }
+                url = url + "/" + dateTime.getYear() + "/" + dateTime.getMonth() + "/" + dateTime.getDayOfMonth() + "/" + slug;
+            }
+        }
 
         // Overwrite the default template, when a template is defined in the front matter
         String tempTemplate = (String)frontMatter.get(Constants.TEMPLATE_ID);
@@ -172,47 +195,38 @@ public class Fragment implements Comparable<Fragment> {
             this.visible = true;
         }
         order = Integer.parseInt((String)frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
-
-    }
-
-    /**
-     *  Special front matter entries. Needs to be taken care of in child class.
-     */
-    protected void interpretFrontMatterSpecial() {
-        // empty for extension purposes
     }
 
     /**
      * Parses the JSON front-matter.
-     * @param jsonString A string containing the complete YAML front-matter
+     * @param jsonString A string containing the complete JSON front-matter
      */
     protected void parseJsonFrontMatter(String jsonString) {
 
         frontMatter = (Map< String, Object>) JSON.parse(jsonString);
     }
 
-    protected void parseMarkdown(BufferedReader br) throws IOException {
-        String markdown = org.apache.commons.io.IOUtils.toString(br);
-        Parser parser = Parser.builder().build();
-        Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        content = renderer.render(document);
-    }
-
-    protected void parseMarkdown2(BufferedReader br) throws IOException {
+    /**
+     * Parses the Markdown content. Splits the different languages, if necessary. Also creates the preview (previews, in
+     * case of multiple languages). Languages are separated either via "--- xx ---" or "--- xx-yy ---" meaning just the
+     * language id or the language-country id.
+     * @param br BufferedReader of the Fragment file.
+     * @throws IOException
+     */
+    protected void parseContent(BufferedReader br) throws IOException {
         String buffer = "";
         String currentLanguage = defaultLanguage;
 
         String line = br.readLine();
         while (line != null) {
             if (line.matches("--- \\w{2} ---")) {
-                languages.put(currentLanguage, parseMarkdown3(buffer));
-                languagesPreview.put(currentLanguage, parseMarkdown3(extractPreview(buffer)));
+                languages.put(currentLanguage, parseMarkdown(buffer));
+                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer)));
                 currentLanguage = line.substring(4, 6);
                 buffer = "";
             } else if (line.matches("--- \\w{2}-\\w{2} ---")) {
-                languages.put(currentLanguage, parseMarkdown3(buffer));
-                languagesPreview.put(currentLanguage, parseMarkdown3(extractPreview(buffer)));
+                languages.put(currentLanguage, parseMarkdown(buffer));
+                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer)));
                 currentLanguage = line.substring(4, 9);
                 buffer = "";
             } else {
@@ -223,11 +237,11 @@ public class Fragment implements Comparable<Fragment> {
                 line = line + "\n";
             }
         }
-        languages.put(currentLanguage, parseMarkdown3(buffer));
-        languagesPreview.put(currentLanguage, parseMarkdown3(extractPreview(buffer)));
+        languages.put(currentLanguage, parseMarkdown(buffer));
+        languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer)));
     }
 
-    protected String parseMarkdown3(String content) {
+    protected String parseMarkdown(String content) {
         Parser parser = Parser.builder().build();
         Node document = parser.parse(content);
         HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -261,6 +275,12 @@ public class Fragment implements Comparable<Fragment> {
         result = content.trim();
         if (result.contains("<!--more-->")) {
             return result.substring(0, result.indexOf("<!--more-->"));
+        } else if (result.contains("<!-- more -->")) {
+            return result.substring(0, result.indexOf("<!-- more -->"));
+        } else if (result.contains("<!-- more-->")) {
+            return result.substring(0, result.indexOf("<!-- more-->"));
+        } else if (result.contains("<!--more -->")) {
+            return result.substring(0, result.indexOf("<!--more -->"));
         }
         return "";
     }

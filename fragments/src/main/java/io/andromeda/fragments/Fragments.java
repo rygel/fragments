@@ -11,8 +11,6 @@ import ro.pippo.core.util.ClasspathUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.DirectoryStream;
@@ -32,10 +30,14 @@ public class Fragments {
     /** The logger instance for this class. */
     private final static Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
 
+    /** All fragments, even invisible ones (visible: false). */
     private List<Fragment> allFragments = new ArrayList<Fragment>();
+    /** Only fragments, invisible ones (visible: false) are excluded. */
     private List<Fragment> visibleFragments = new ArrayList<Fragment>();
 
+    /** Reference to the Pippo applications. Needed for creating the routes. */
     private Application application;
+    /** Reference to the @see io.andromeda.fragments.Constants object. */
     private Configuration configuration;
     private String name;
     private String urlPath;
@@ -127,13 +129,15 @@ public class Fragments {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(directory))) {
             for (Path path : directoryStream) {
                 try {
-                    Languages l = application.getLanguages();
-                    String a = l.getRegisteredLanguages().get(0);
-                    Fragment fragment = new Fragment(path.normalize().toString(), urlPath, defaultTemplate, application.getLanguages().getRegisteredLanguages().get(0));
-                    if (fragment.visible) {
-                        visibleFragments.add(fragment);
+                    if (path.endsWith(configuration.extension)) {
+                        Languages l = application.getLanguages();
+                        String a = l.getRegisteredLanguages().get(0);
+                        Fragment fragment = new Fragment(path.normalize().toString(), urlPath, defaultTemplate, application.getLanguages().getRegisteredLanguages().get(0), configuration);
+                        if (fragment.visible) {
+                            visibleFragments.add(fragment);
+                        }
+                        allFragments.add(fragment);
                     }
-                    allFragments.add(fragment);
                 } catch (Exception e) {
                     LOGGER.error(e.toString());
                 }
@@ -188,7 +192,7 @@ public class Fragments {
     private void prepareFragments(){
         int counter = 0;
         for (Fragment fragment: allFragments) {
-            fragment.full_url = configuration.protocol + configuration.domain + fragment.full_url;
+            fragment.full_url = configuration.protocol + configuration.domain + fragment.url;
             //Create the URLEncoded  url
             try {
                 fragment.full_url_encoded = URLEncoder.encode(fragment.full_url, "UTF-8");
