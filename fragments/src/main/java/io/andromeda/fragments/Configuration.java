@@ -3,6 +3,8 @@ package io.andromeda.fragments;
 import io.andromeda.fragments.types.RouteType;
 
 import java.time.ZoneId;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Configuration object for Fragments class.

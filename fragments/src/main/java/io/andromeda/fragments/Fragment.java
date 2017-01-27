@@ -34,8 +34,8 @@ public class Fragment implements Comparable<Fragment> {
     /** The logger instance for this class. */
     private final static Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
 
-    public Map<String,Object> frontMatter = new HashMap<>();
-    protected Map<String,Object> context = new HashMap<>();
+    public Map<String,Object> frontMatter = new TreeMap<>();
+    protected Map<String,Object> context = new TreeMap<>();
     protected FrontMatterType frontMatterType;
 
     private Configuration configuration;

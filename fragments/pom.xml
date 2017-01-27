@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark</artifactId>
-            <version>0.10.3</version>
+            <version>0.12.3</version>
         </dependency>
         <!-- /Markdown -->
 

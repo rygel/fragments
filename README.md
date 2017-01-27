@@ -13,7 +13,12 @@ The main features are:
 - Global or local (per file) template definitions
 - Global and local (per file) Context
 - Invisible Pages (e.g. drafts)
+- Generation of preview texts
+- Support of multiple languages
 - Expiring files (not yet implemented)
+
+## Other Features
+- Supports obfuscation of email addresses via [flexmark-java](https://github.com/vsch/flexmark-java) (in the Markdown files) as well as directly via the default context.
 
 ## Use Cases
 I have often the case that I want to display collections of data with Pippo, e.g. a list of articles, a list of events, etc.
@@ -71,3 +76,10 @@ Is used to configure the following properties of a Fragment:
 | extension | String    | ".md"              | The extension of the markdown files.                                                                                                                       |
 | protocol  | String    | "https://"         | The protocol of the website. Used for constructing the fully encoded URL.                                                                                  |
 | routeType | RouteType | RouteType.ARTICLES | The route type of the Fragments object. Defaults to ARTICLES, but can be changed to Blog, which will include the date into the URL, e.g. /2017/01/14/slug. |
+
+### Dependencies
+- flexmark-java
+- fastjson
+- snakeyaml
+- commons-io
+- pippo-core

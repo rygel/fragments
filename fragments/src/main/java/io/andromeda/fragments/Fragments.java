@@ -129,7 +129,7 @@ public class Fragments {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(directory))) {
             for (Path path : directoryStream) {
                 try {
-                    if (path.endsWith(configuration.extension)) {
+                    if (path.toString().toLowerCase().endsWith(configuration.extension)) {
                         Languages l = application.getLanguages();
                         String a = l.getRegisteredLanguages().get(0);
                         Fragment fragment = new Fragment(path.normalize().toString(), urlPath, defaultTemplate, application.getLanguages().getRegisteredLanguages().get(0), configuration);

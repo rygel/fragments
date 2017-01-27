@@ -23,8 +23,8 @@
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.17" level="project" />
     <orderEntry type="library" name="Maven: ro.pippo:pippo-fastjson:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.8" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark:0.10.3" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util:0.10.3" level="project" />
+    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark:0.12.3" level="project" />
+    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util:0.12.3" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: ro.pippo:pippo-jetty:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.3.8.v20160314" level="project" />
