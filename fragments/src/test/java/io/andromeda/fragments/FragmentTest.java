@@ -69,7 +69,7 @@ public class FragmentTest extends Assert {
     }
     */
 
-    @Test
+    /*@Test
     public void testFragmentDateIsShort() throws Exception {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         final Appender mockAppender = mock(Appender.class);
@@ -84,6 +84,6 @@ public class FragmentTest extends Assert {
                 return ((LoggingEvent)argument).getFormattedMessage().contains("Error reading file (file_not_found.md): java.lang.Exception: file_not_found.md (The system cannot find the file specified)");
             }
         }));
-    }
+    }*/
 
 }
