@@ -3,19 +3,18 @@ package io.andromeda.fragments;
 import io.andromeda.fragments.types.RouteType;
 
 import java.time.ZoneId;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Configuration object for Fragments class.
  * @author Alexander Brandt
  */
 public class Configuration {
-    String extension = ".md";
-    String domain = "";
-    String protocol = "https://";
-    RouteType routeType = RouteType.ARTICLES;
-    ZoneId timeZone = ZoneId.of("UTC");
+    public String extension = ".md";
+    public String domain = "";
+    public String protocol = "https://";
+    public RouteType routeType = RouteType.ARTICLES;
+    public boolean registerOverviewRoute = true;
+    public ZoneId timeZone = ZoneId.of("UTC");
 
     /**
      * Default Constructor.
@@ -43,6 +42,11 @@ public class Configuration {
         return new Configuration();
     }
 
+    public Configuration setRouteType(RouteType routeType) {
+        this.routeType = routeType;
+        return this;
+    }
+
     /**
      * Returns a default Configuration instance. With protocol and domain overrides.
      *
@@ -53,4 +57,5 @@ public class Configuration {
     public static Configuration getDefault(String protocol, String domain) {
         return new Configuration(protocol, domain);
     }
+
 }

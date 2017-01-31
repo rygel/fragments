@@ -169,25 +169,27 @@ public class Fragments {
                 }
             });
         }
-        String route = Utilities.removeTrailingSlash(urlPath);
-        application.GET(route, new RouteHandler() {
-            @Override
-            public void handle(RouteContext routeContext) {
-                for (Fragment fragment: allFragments) {
-                    fragment.update(routeContext.getParameter("lang").toString());
+        if (configuration.registerOverviewRoute) {
+            String route = Utilities.removeTrailingSlash(urlPath);
+            application.GET(route, new RouteHandler() {
+                @Override
+                public void handle(RouteContext routeContext) {
+                    for (Fragment fragment: allFragments) {
+                        fragment.update(routeContext.getParameter("lang").toString());
+                    }
+                    final Map<String, Object> context = new TreeMap<>(defaultContext);
+                    context.put("overview_url", urlPath);
+                    context.put("fragments", getVisibleFragmentOrdered(byOrder));
+                    context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
+                    context.put("all_fragments", allFragments);
+                    routeContext.render(overviewTemplate, context);
                 }
-                final Map<String, Object> context = new TreeMap<>(defaultContext);
-                context.put("overview_url", urlPath);
-                context.put("fragments", getVisibleFragmentOrdered(byOrder));
-                context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
-                context.put("all_fragments", allFragments);
-                routeContext.render(overviewTemplate, context);
-            }
-        });
+            });
+        }
     }
 
     /**
-     * Handle
+     * Handle the creation of the encoded URL as well as the order of the Fragments.
      */
     private void prepareFragments(){
         int counter = 0;
@@ -205,6 +207,15 @@ public class Fragments {
             }
             counter++;
         }
+    }
+
+    /**
+     * Update the default context. This is useful to inject new information after the Fragments are created.
+     * Already existing keys will be overridden!
+     * @param newContext Map containing the new context.
+     */
+    public void updateDefaultContext(Map<String, Object> newContext) {
+        defaultContext.putAll(newContext);
     }
 
     public List<Fragment> getVisibleFragmentOrdered(Comparator orderBy) {

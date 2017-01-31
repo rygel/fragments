@@ -1,15 +1,25 @@
 package io.andromeda.fragments;
 
 import com.alibaba.fastjson.JSON;
+import com.vladsch.flexmark.Extension;
 import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.parser.ParserEmulationProfile;
+import com.vladsch.flexmark.util.options.DataHolder;
+import com.vladsch.flexmark.util.options.DataKey;
+import com.vladsch.flexmark.util.options.DataSet;
+import com.vladsch.flexmark.util.options.MutableDataHolder;
 import io.andromeda.fragments.types.FrontMatterType;
 import io.andromeda.fragments.types.RouteType;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,9 +30,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
+import java.time.temporal.ChronoField;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import static ro.pippo.core.util.ClasspathUtils.locateOnClasspath;
@@ -53,6 +70,7 @@ public class Fragment implements Comparable<Fragment> {
     public int order;
     public String defaultLanguage;
     public ZonedDateTime dateTime;
+    public Date date;
     public Map<String,String> languages = new TreeMap<>();
     public Map<String,String> languagesPreview = new TreeMap<>();
     public Map<String,String> languagesTitles = new TreeMap<>();
@@ -66,10 +84,11 @@ public class Fragment implements Comparable<Fragment> {
         this.defaultLanguage = defaultLanguage;
         try {
             readFile();
+            LOGGER.info("Loaded: " + filename);
         } catch (Exception ex) {
             LOGGER.error("Error reading file (" + filename + "): " + ex.toString());
         }
-        LOGGER.info("Loaded: " + filename);
+
     }
 
     public String getFilename() {
@@ -148,8 +167,9 @@ public class Fragment implements Comparable<Fragment> {
      * @param yamlString A string containing the complete YAML front-matter
      */
     protected void parseYamlFrontMatter(String yamlString) {
-        Yaml yaml = new Yaml();
-        frontMatter = (Map< String, Object>) yaml.load(yamlString);
+        //Use custom resolver to prevent the default implicit Tags of SnakeYAML.
+        Yaml yaml = new Yaml(new Constructor(), new Representer(), new DumperOptions(),new YAMLResolver());
+        frontMatter = (Map<String, Object>) yaml.load(yamlString);
     }
 
     /**
@@ -175,12 +195,22 @@ public class Fragment implements Comparable<Fragment> {
                 LOGGER.error("Date is not available for a fragment of type Blog!");
             } else {
                 try {
-                    dateTime = ZonedDateTime.parse(date);
+                    DateTimeFormatter formatter =
+                            new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd['T'HH:mm:ss.SSSz]")
+                                    .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                                    .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                                    .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                                    .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
+                                    .parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
+                                    .toFormatter();
+                    dateTime = ZonedDateTime.parse(date, formatter);
+                    this.date = Date.from(dateTime.toInstant());
                 } catch (DateTimeParseException e) {
                     LOGGER.error(e.toString());
                     dateTime = ZonedDateTime.now(ZoneId.of("UTC"));
                 }
-                url = url + "/" + dateTime.getYear() + "/" + dateTime.getMonth() + "/" + dateTime.getDayOfMonth() + "/" + slug;
+                url = url + "/" + dateTime.getYear() + "/" + String.format("%02d", dateTime.getMonthValue())
+                        + "/" + String.format("%02d", dateTime.getDayOfMonth()) + "/" + slug;
             }
         }
 
@@ -244,7 +274,13 @@ public class Fragment implements Comparable<Fragment> {
     protected String parseMarkdown(String content) {
         Parser parser = Parser.builder().build();
         Node document = parser.parse(content);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        HtmlRenderer.Builder builder = HtmlRenderer.builder();
+        Extension tablesExtension = TablesExtension.create();
+        List<Extension> extensions = new ArrayList<>();
+        extensions.add(tablesExtension);
+        builder.extensions(extensions);
+        builder.set(HtmlRenderer.OBFUSCATE_EMAIL, true);
+        HtmlRenderer renderer = builder.build();
         return renderer.render(document);
     }
 

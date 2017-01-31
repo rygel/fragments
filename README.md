@@ -15,7 +15,10 @@ The main features are:
 - Invisible Pages (e.g. drafts)
 - Generation of preview texts
 - Support of multiple languages
-- Expiring files (not yet implemented)
+
+### Todo
+- Expiring files
+- Categories and Tags
 
 ## Other Features
 - Supports obfuscation of email addresses via [flexmark-java](https://github.com/vsch/flexmark-java) (in the Markdown files) as well as directly via the default context.
@@ -70,16 +73,21 @@ This is the first event using Fragments.
 ### Configuration class
 Is used to configure the following properties of a Fragment:
 
-| Property  | Type      | Default value      | Description                                                                                                                                                |
-|:----------|:----------|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| domain    | String    | ""                 | The domain of the website, e.g. example.com                                                                                                                |
-| extension | String    | ".md"              | The extension of the markdown files.                                                                                                                       |
-| protocol  | String    | "https://"         | The protocol of the website. Used for constructing the fully encoded URL.                                                                                  |
-| routeType | RouteType | RouteType.ARTICLES | The route type of the Fragments object. Defaults to ARTICLES, but can be changed to Blog, which will include the date into the URL, e.g. /2017/01/14/slug. |
+| Property              | Type      | Default value      | Description                                                                                                                                                |
+|:----------------------|:----------|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| domain                | String    | ""                 | The domain of the website, e.g. example.com                                                                                                                |
+| extension             | String    | ".md"              | The extension of the markdown files.                                                                                                                       |
+| protocol              | String    | "https://"         | The protocol of the website. Used for constructing the fully encoded URL.                                                                                  |
+| registerOverviewRoute | boolean   | true               | When set to false the route for the baseURL will not be automatically be registered. This allows to create that route manually with total control.         |
+| routeType             | RouteType | RouteType.ARTICLES | The route type of the Fragments object. Defaults to ARTICLES, but can be changed to Blog, which will include the date into the URL, e.g. /2017/01/14/slug. |
+
+### Example websites
+- 
+
 
 ### Dependencies
-- flexmark-java
-- fastjson
-- snakeyaml
-- commons-io
-- pippo-core
+- [pippo-core](https://github.com/decebals/pippo) to be able to automatically generate the routes.
+- [flexmark-java](https://github.com/vsch/flexmark-java) as a markdown parser.
+- [SnakeYaml](https://bitbucket.org/asomov/snakeyaml) as a YAML (front matter) parser.
+- [Fast JSON](https://github.com/alibaba/fastjson) as a JSON (front matter) parser.
+- [Apache Commons IO](https://commons.apache.org/proper/commons-io/) for convenience file name handling.
