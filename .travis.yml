@@ -1,5 +1,4 @@
 language: java
-  - oraclejdk8
 sudo: false
 install: true
 addons:
@@ -7,7 +6,7 @@ addons:
     token:
       secure: "your_token_encrypted_with_travis_encrypt_tool"
 jdk:
-
+  - oraclejdk8
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 cache:
