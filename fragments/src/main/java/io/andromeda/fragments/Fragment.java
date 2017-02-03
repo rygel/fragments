@@ -6,11 +6,6 @@ import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.parser.ParserEmulationProfile;
-import com.vladsch.flexmark.util.options.DataHolder;
-import com.vladsch.flexmark.util.options.DataKey;
-import com.vladsch.flexmark.util.options.DataSet;
-import com.vladsch.flexmark.util.options.MutableDataHolder;
 import io.andromeda.fragments.types.FrontMatterType;
 import io.andromeda.fragments.types.RouteType;
 import org.apache.commons.io.FilenameUtils;
@@ -35,16 +30,15 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 
 import static ro.pippo.core.util.ClasspathUtils.locateOnClasspath;
 
 /**
+ * A Fragment representing one Markdown file (optionally containing multiple languages).
  * @author Alexander Brandt
  */
 public class Fragment implements Comparable<Fragment> {
@@ -56,7 +50,7 @@ public class Fragment implements Comparable<Fragment> {
     protected FrontMatterType frontMatterType;
 
     private Configuration configuration;
-    private String filename;
+    public String filename;
     private Path path;
     public boolean visible = false;
     public String template;
@@ -75,6 +69,14 @@ public class Fragment implements Comparable<Fragment> {
     public Map<String,String> languagesPreview = new TreeMap<>();
     public Map<String,String> languagesTitles = new TreeMap<>();
 
+    /**
+     * Constructor
+     * @param filename The filename of the Markdown file.
+     * @param baseUrl The base URL of the Fragment.
+     * @param template The name of the template, taken from the Fragments configuration.
+     * @param defaultLanguage The default language for this fragment.
+     * @param configuration The Configuration object.
+     */
     public Fragment(String filename, String baseUrl, String template, String defaultLanguage, Configuration configuration) {
         this.configuration = configuration;
         this.filename = filename;
@@ -88,11 +90,6 @@ public class Fragment implements Comparable<Fragment> {
         } catch (Exception ex) {
             LOGGER.error("Error reading file (" + filename + "): " + ex.toString());
         }
-
-    }
-
-    public String getFilename() {
-        return filename;
     }
 
     public String getDirectory() {

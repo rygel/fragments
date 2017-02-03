@@ -1,5 +1,6 @@
 package io.andromeda.fragments;
 
+import io.andromeda.fragments.db.DBSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
@@ -37,8 +38,10 @@ public class Fragments {
 
     /** Reference to the Pippo applications. Needed for creating the routes. */
     private Application application;
-    /** Reference to the @see io.andromeda.fragments.Constants object. */
+    /** Reference to the @see io.andromeda.fragments.Configuration object. */
     private Configuration configuration;
+
+    private DBSupport dbsupport = new DBSupport();
     private String name;
     private String urlPath;
     private String dataDirectory;
@@ -114,6 +117,7 @@ public class Fragments {
         readDirectory(dataDirectory.toString());
         prepareFragments();
         registerFragments();
+        dbsupport.createTable(this);
     }
 
     public List<Fragment> getFragments(boolean includingInvisible) {
@@ -163,8 +167,10 @@ public class Fragments {
                     context.put("fragments", getVisibleFragmentOrdered(byOrder));
                     context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
                     context.put("all_fragments", allFragments);
+                    context.put("top_fragments", dbsupport.getTopFragments());
                     context.put("lang", lang);
 
+                    dbsupport.addClick(fragment);
                     routeContext.render(fragment.template, context);
                 }
             });
@@ -182,6 +188,7 @@ public class Fragments {
                     context.put("fragments", getVisibleFragmentOrdered(byOrder));
                     context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
                     context.put("all_fragments", allFragments);
+                    context.put("top_fragments", dbsupport.getTopFragments());
                     routeContext.render(overviewTemplate, context);
                 }
             });
