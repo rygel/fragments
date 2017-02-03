@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneId;
@@ -39,14 +38,17 @@ import static ro.pippo.core.util.ClasspathUtils.locateOnClasspath;
 
 /**
  * A Fragment representing one Markdown file (optionally containing multiple languages).
+ *
  * @author Alexander Brandt
  */
 public class Fragment implements Comparable<Fragment> {
-    /** The logger instance for this class. */
+    /**
+     * The logger instance for this class.
+     */
     private final static Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
 
-    public Map<String,Object> frontMatter = new TreeMap<>();
-    protected Map<String,Object> context = new TreeMap<>();
+    public Map<String, Object> frontMatter = new TreeMap<>();
+    protected Map<String, Object> context = new TreeMap<>();
     protected FrontMatterType frontMatterType;
 
     private Configuration configuration;
@@ -65,17 +67,18 @@ public class Fragment implements Comparable<Fragment> {
     public String defaultLanguage;
     public ZonedDateTime dateTime;
     public Date date;
-    public Map<String,String> languages = new TreeMap<>();
-    public Map<String,String> languagesPreview = new TreeMap<>();
-    public Map<String,String> languagesTitles = new TreeMap<>();
+    public Map<String, String> languages = new TreeMap<>();
+    public Map<String, String> languagesPreview = new TreeMap<>();
+    public Map<String, String> languagesTitles = new TreeMap<>();
 
     /**
      * Constructor
-     * @param filename The filename of the Markdown file.
-     * @param baseUrl The base URL of the Fragment.
-     * @param template The name of the template, taken from the Fragments configuration.
+     *
+     * @param filename        The filename of the Markdown file.
+     * @param baseUrl         The base URL of the Fragment.
+     * @param template        The name of the template, taken from the Fragments configuration.
      * @param defaultLanguage The default language for this fragment.
-     * @param configuration The Configuration object.
+     * @param configuration   The Configuration object.
      */
     public Fragment(String filename, String baseUrl, String template, String defaultLanguage, Configuration configuration) {
         this.configuration = configuration;
@@ -86,14 +89,14 @@ public class Fragment implements Comparable<Fragment> {
         this.defaultLanguage = defaultLanguage;
         try {
             readFile();
-            LOGGER.info("Loaded: " + filename);
+            LOGGER.info("Loaded: {}", filename);
         } catch (Exception ex) {
             LOGGER.error("Error reading file (" + filename + "): " + ex.toString());
         }
     }
 
     public String getDirectory() {
-        return path.normalize().toAbsolutePath().toFile().getParent().toString();
+        return path.normalize().toAbsolutePath().toFile().getParent();
     }
 
     protected final void readFile() throws Exception {
@@ -101,10 +104,10 @@ public class Fragment implements Comparable<Fragment> {
         URL url = locateOnClasspath(filename);
         if (url == null) {
             Path path = Paths.get(filename);
-            if (Files.exists(path)) {
+            if (path.toFile().exists()) {
                 url = path.toUri().toURL();
             } else {
-                LOGGER.error("Cannot load file \"" + filename + "\"!");
+                LOGGER.error("Cannot load file \"{}\"!", filename);
                 throw new Exception(filename + " (The system cannot find the file specified)");
             }
         }
@@ -115,7 +118,7 @@ public class Fragment implements Comparable<Fragment> {
         // detect YAML front matter
         String line = br.readLine();
         if (line == null) {
-            LOGGER.warn("File \"" + filename + "\" is empty.");
+            LOGGER.warn("File \"{}\" is empty.", filename);
             throw new Exception("File is empty: " + path.normalize().toAbsolutePath().toString());
         }
         while (line.isEmpty()) {
@@ -161,11 +164,12 @@ public class Fragment implements Comparable<Fragment> {
 
     /**
      * Parses the YAML front-matter.
+     *
      * @param yamlString A string containing the complete YAML front-matter
      */
     protected void parseYamlFrontMatter(String yamlString) {
         //Use custom resolver to prevent the default implicit Tags of SnakeYAML.
-        Yaml yaml = new Yaml(new Constructor(), new Representer(), new DumperOptions(),new YAMLResolver());
+        Yaml yaml = new Yaml(new Constructor(), new Representer(), new DumperOptions(), new YAMLResolver());
         frontMatter = (Map<String, Object>) yaml.load(yamlString);
     }
 
@@ -187,7 +191,7 @@ public class Fragment implements Comparable<Fragment> {
             //full_url = full_url + slug;
         } else {
             //Do the date handling
-            String date = (String)frontMatter.get(Constants.DATE_ID);
+            String date = (String) frontMatter.get(Constants.DATE_ID);
             if (date == null) {
                 LOGGER.error("Date is not available for a fragment of type Blog!");
             } else {
@@ -212,31 +216,33 @@ public class Fragment implements Comparable<Fragment> {
         }
 
         // Overwrite the default template, when a template is defined in the front matter
-        String tempTemplate = (String)frontMatter.get(Constants.TEMPLATE_ID);
+        String tempTemplate = (String) frontMatter.get(Constants.TEMPLATE_ID);
         if (tempTemplate != null) {
             template = tempTemplate;
         }
-        title = (String)frontMatter.get(Constants.TITLE_ID);
+        title = (String) frontMatter.get(Constants.TITLE_ID);
         String visible = (String) frontMatter.getOrDefault(Constants.VISIBLE_ID, "true");
-        if (visible.equals("true")) {
+        if ("true".equals(visible)) {
             this.visible = true;
         }
-        order = Integer.parseInt((String)frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
+        order = Integer.parseInt((String) frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
     }
 
     /**
      * Parses the JSON front-matter.
+     *
      * @param jsonString A string containing the complete JSON front-matter
      */
     protected void parseJsonFrontMatter(String jsonString) {
 
-        frontMatter = (Map< String, Object>) JSON.parse(jsonString);
+        frontMatter = (Map<String, Object>) JSON.parse(jsonString);
     }
 
     /**
      * Parses the Markdown content. Splits the different languages, if necessary. Also creates the preview (previews, in
      * case of multiple languages). Languages are separated either via "--- xx ---" or "--- xx-yy ---" meaning just the
      * language id or the language-country id.
+     *
      * @param br BufferedReader of the Fragment file.
      * @throws IOException
      */
@@ -300,7 +306,7 @@ public class Fragment implements Comparable<Fragment> {
     private String extractPreview(String content) {
         //Check if preview is defined inside front Matter
         //A preview property on a post. The text of this property runs through the appropriate template and be saved as the preview for a post
-        String result = (String)frontMatter.get(Constants.PREVIEW_ID);
+        String result = (String) frontMatter.get(Constants.PREVIEW_ID);
         if (result != null) {
             return result;
         }
@@ -318,6 +324,7 @@ public class Fragment implements Comparable<Fragment> {
         return "";
     }
 
+    @Override
     public int compareTo(Fragment other) {
         return this.order - other.order;
     }

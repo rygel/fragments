@@ -10,6 +10,7 @@ public class YAMLResolver extends Resolver {
     /**
      * do not resolve any Tag.
      */
+    @Override
     protected void addImplicitResolvers() {
         //addImplicitResolver(Tag.BOOL, BOOL, "yYnNtTfFoO");
         // addImplicitResolver(Tags.FLOAT, FLOAT, "-+0123456789.");

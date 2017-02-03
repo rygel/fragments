@@ -85,7 +85,7 @@ public class Fragments {
             // The fragments path is not found in the class path. Now checking the file system.
             Path fragmentsPath = Paths.get(dataDirectory);
             //Check for path in the file system, not the Classpath.
-            if (Files.exists(fragmentsPath)) {
+            if (fragmentsPath.toFile().exists()) {
                 // The fragments directory was found in the file system
                 try {
                     location =  fragmentsPath.toUri().toURL();
@@ -232,12 +232,14 @@ public class Fragments {
     }
 
     public Comparator<Fragment> byOrder = new Comparator<Fragment>() {
+        @Override
         public int compare(Fragment left, Fragment right) {
             return left.order - right.order;
         }
     };
 
     public Comparator<Fragment> byTitle = new Comparator<Fragment>() {
+        @Override
         public int compare(Fragment left, Fragment right) {
             return left.title.compareToIgnoreCase(right.title);
         }

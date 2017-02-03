@@ -3,11 +3,6 @@ package io.andromeda.fragments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Random;
 
 /**
@@ -51,7 +46,7 @@ public class Utilities {
      * @param newDirectory
      * @return
      */
-    public static String checkIfDirectoryExists(String newDirectory) {
+    /*public static String checkIfDirectoryExists(String newDirectory) {
         File file = new File(newDirectory);
         Path path = Paths.get(file.getAbsolutePath());
         if (!Files.isDirectory(path)) {
@@ -64,7 +59,7 @@ public class Utilities {
             }
         }
         return file.getAbsolutePath();
-    }
+    }*/
 
   private static Random random = new Random(0x2626);
 
@@ -96,8 +91,8 @@ public class Utilities {
       case '>':  return "&gt;";
       case '"':  return "&quot;";
       case '\'': return "&#39;";
+      default: return null;
     }
-    return null;
   }
 
 }
