@@ -16,18 +16,21 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:16.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.coverity.security:coverity-escapers:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.ocpsoft.prettytime:prettytime:3.2.5.Final" level="project" />
-    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.7" level="project" />
-    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.7" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.9" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.9" level="project" />
     <orderEntry type="module" module-name="fragments" />
     <orderEntry type="library" name="Maven: ro.pippo:pippo-snakeyaml:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.17" level="project" />
     <orderEntry type="library" name="Maven: ro.pippo:pippo-fastjson:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.8" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark:0.13.1" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util:0.13.1" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-ext-tables:0.13.1" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-formatter:0.13.1" level="project" />
-    <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
+    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark:0.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util:0.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-ext-tables:0.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-formatter:0.13.3" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
+    <orderEntry type="library" name="Maven: org.sql2o:sql2o:1.6.0-RC3" level="project" />
+    <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:2.6.0" level="project" />
+    <orderEntry type="library" name="Maven: com.h2database:h2:1.4.193" level="project" />
     <orderEntry type="library" name="Maven: ro.pippo:pippo-jetty:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.3.8.v20160314" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />

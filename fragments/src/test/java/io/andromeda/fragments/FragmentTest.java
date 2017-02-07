@@ -35,7 +35,7 @@ public class FragmentTest extends Assert {
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
 
-        Fragment fragment = new Fragment("file_not_found.md", "/", "", "en", Configuration.getDefault());
+        Fragment fragment = new Fragment("file_not_found.md", "/", "", "en", Configuration.getDefault("Test"));
 
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override

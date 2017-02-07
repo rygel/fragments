@@ -1,10 +1,25 @@
+/*
+ * Copyright (C) 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.andromeda.fragments;
 
+import io.andromeda.fragments.db.DBConfiguration;
 import io.andromeda.fragments.db.DBSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
-import ro.pippo.core.Languages;
 import ro.pippo.core.route.RouteContext;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.ClasspathUtils;
@@ -29,44 +44,41 @@ import java.util.TreeMap;
  */
 public class Fragments {
     /** The logger instance for this class. */
-    private final static Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
 
     /** All fragments, even invisible ones (visible: false). */
-    private List<Fragment> allFragments = new ArrayList<Fragment>();
+    private List<Fragment> allFragments = new ArrayList<>();
     /** Only fragments, invisible ones (visible: false) are excluded. */
-    private List<Fragment> visibleFragments = new ArrayList<Fragment>();
+    private List<Fragment> visibleFragments = new ArrayList<>();
 
     /** Reference to the Pippo applications. Needed for creating the routes. */
     private Application application;
     /** Reference to the @see io.andromeda.fragments.Configuration object. */
     private Configuration configuration;
 
-    private DBSupport dbsupport = new DBSupport();
-    private String name;
+    private DBSupport dbsupport;
     private String urlPath;
     private String dataDirectory;
     private String overviewTemplate;
     private String defaultTemplate;
     private Map<String, Object> defaultContext;
 
-    public Fragments(Application application, String name, String urlPath, String dataDirectory, Configuration configuration) {
-        this(application, name, urlPath, dataDirectory, "", "", null, configuration);
+    public Fragments(Application application, String urlPath, String dataDirectory, Configuration configuration) {
+        this(application, urlPath, dataDirectory, "", "", null, configuration);
     }
 
     /**
      * Main class to hold all fragments and to create all routes automatically.
      *
      * @param application Reference to PippoApplication. Needed to create the routes for the files.
-     * @param name Name of the Fragments instance. Used for error messages to aid debugging in case files cannot be loaded properly.
      * @param urlPath Path of the base URL. Used for the automatically created routes. Full path will be urlPath/slug.
      * @param dataDirectory Directory containing the Markdown files.
      * @param overviewTemplate Template to be used for the overview page, e.g urlPath
      * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside the front matter.
      * @param defaultContext Default context to be used when rending the overview and the individual page. Can be extended via the front matter.
      */
-    public Fragments(Application application, String name, String urlPath, String dataDirectory, String overviewTemplate, String defaultTemplate, Map<String, Object> defaultContext, Configuration configuration) {
+    public Fragments(Application application, String urlPath, String dataDirectory, String overviewTemplate, String defaultTemplate, Map<String, Object> defaultContext, Configuration configuration) {
         this.application = application;
-        this.name = name;
         this.urlPath = urlPath;
         this.dataDirectory = dataDirectory;
         this.overviewTemplate = overviewTemplate;
@@ -78,7 +90,7 @@ public class Fragments {
         }
         this.configuration = configuration;
 
-        LOGGER.debug("Creating Fragments for [" + name + "].");
+        LOGGER.debug("Creating Fragments for [{}].", configuration.getName());
         URL location = ClasspathUtils.locateOnClasspath("io/andromeda/fragments/" + dataDirectory);
 
         if (location == null) {
@@ -94,14 +106,14 @@ public class Fragments {
                 }
             } else {
                 LOGGER.error("The directory for the fragments data (\"{}\") for fragments \"{}\" does not exist or does not contain any files! The fragments will not be loaded.",
-                        dataDirectory, name);
+                        dataDirectory, configuration.getName());
             }
         } else {
             LOGGER.info(location.toString());
         }
 
         if (dataDirectory == null) {
-            LOGGER.error("The data directory is empty! Fragments: " + this.name);
+            LOGGER.error("The data directory is empty! Fragments: {}", configuration.getName());
         }
 
         /*LOGGER.info("PROTOCOL: " + dataDirectory.getProtocol());
@@ -117,7 +129,6 @@ public class Fragments {
         readDirectory(dataDirectory.toString());
         prepareFragments();
         registerFragments();
-        dbsupport.createTable(this);
     }
 
     public List<Fragment> getFragments(boolean includingInvisible) {
@@ -134,8 +145,6 @@ public class Fragments {
             for (Path path : directoryStream) {
                 try {
                     if (path.toString().toLowerCase().endsWith(configuration.extension)) {
-                        Languages l = application.getLanguages();
-                        String a = l.getRegisteredLanguages().get(0);
                         Fragment fragment = new Fragment(path.normalize().toString(), urlPath, defaultTemplate, application.getLanguages().getRegisteredLanguages().get(0), configuration);
                         if (fragment.visible) {
                             visibleFragments.add(fragment);
@@ -143,13 +152,13 @@ public class Fragments {
                         allFragments.add(fragment);
                     }
                 } catch (Exception e) {
-                    LOGGER.error(e.toString());
+                    LOGGER.error("Error: ", e);
                 }
             }
         } catch (IOException ex) {
-            LOGGER.error("[Fragments: " + name + "] Error reading data directory (" + directory + "): ", ex.getCause());
+            LOGGER.error("[Fragments: \"{}\"] Error reading data directory (\"{}\"): {}", configuration.getName(), directory, ex);
         }
-        LOGGER.info("Fragments [{}]: Loaded {} visible fragments of {} total.", name, visibleFragments.size(), allFragments.size());
+        LOGGER.info("Fragments [{}]: Loaded {} visible fragments of {} total.", configuration.getName(), visibleFragments.size(), allFragments.size());
     }
 
     public void registerFragments() {
@@ -167,10 +176,12 @@ public class Fragments {
                     context.put("fragments", getVisibleFragmentOrdered(byOrder));
                     context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
                     context.put("all_fragments", allFragments);
-                    context.put("top_fragments", dbsupport.getTopFragments());
+                    if (dbsupport != null) {
+                        context.put("top_fragments", dbsupport.getTopFragments());
+                        dbsupport.addClick(fragment);
+                    }
                     context.put("lang", lang);
 
-                    dbsupport.addClick(fragment);
                     routeContext.render(fragment.template, context);
                 }
             });
@@ -188,7 +199,9 @@ public class Fragments {
                     context.put("fragments", getVisibleFragmentOrdered(byOrder));
                     context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
                     context.put("all_fragments", allFragments);
-                    context.put("top_fragments", dbsupport.getTopFragments());
+                    if (dbsupport != null) {
+                        context.put("top_fragments", dbsupport.getTopFragments());
+                    }
                     routeContext.render(overviewTemplate, context);
                 }
             });
@@ -225,10 +238,23 @@ public class Fragments {
         defaultContext.putAll(newContext);
     }
 
+    public void enableDatabase(DBConfiguration dbConfiguration) {
+        dbsupport = new DBSupport(dbConfiguration, this);
+
+    }
+
+    public String getDataDirectory() {
+        return dataDirectory;
+    }
+
     public List<Fragment> getVisibleFragmentOrdered(Comparator orderBy) {
         List<Fragment> result =  new ArrayList(visibleFragments);
         result.sort(orderBy);
         return result;
+    }
+
+    public String getName() {
+        return configuration.getName();
     }
 
     public Comparator<Fragment> byOrder = new Comparator<Fragment>() {

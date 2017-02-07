@@ -7,8 +7,8 @@ Add db (h2) to save access of fragments
 
 Table name: FRAGMENT_NAME_statistics
 
-| Name   | Type | Description                           |
-|:-------|:-----|:--------------------------------------|
-| id     |      | ID of the entry                       |
-| name   |      | The filename of the fragment          |
-| clicks |      | The number of clicks of this fragment |
+| Name   | Type            | Description                           |
+|:-------|:----------------|:--------------------------------------|
+| id     | INT PRIMARY KEY | ID of the entry                       |
+| name   | VARCHAR(1000)   | The filename of the fragment          |
+| clicks | BIGINT          | The number of clicks of this fragment |
