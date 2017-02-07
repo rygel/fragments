@@ -39,8 +39,8 @@ public class PippoApplication extends Application {
         });
 
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration();
-        Fragments fragments = new Fragments(this,"Events", "/posts/", currentPath + "/data/posts", "posts_overview", "post", null, configuration);
+        Configuration configuration = new Configuration("events");
+        Fragments fragments = new Fragments(this, "/posts/", currentPath + "/data/posts", "posts_overview", "post", null, configuration);
     }
 
 }
