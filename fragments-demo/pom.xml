@@ -60,7 +60,7 @@
         <dependency>
             <groupId>io.andromeda</groupId>
             <artifactId>fragments</artifactId>
-            <version>0.0.16-SNAPSHOT</version>
+            <version>0.0.15</version>
         </dependency>
     </dependencies>
 
