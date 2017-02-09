@@ -101,8 +101,10 @@ public class Fragment implements Comparable<Fragment> {
         this.full_url = configuration.getUrlPath();
         this.defaultLanguage = defaultLanguage;
         try {
-            readFile();
-            LOGGER.info("Loaded: {}", filename);
+            boolean success = readFile();
+            if (success) {
+                LOGGER.info("Loaded: {}", filename);
+            }
         } catch (Exception e) {
             LOGGER.error("Error reading file ({}): {}", filename, e);
         }
@@ -112,7 +114,7 @@ public class Fragment implements Comparable<Fragment> {
         return path.normalize().toAbsolutePath().toFile().getParent();
     }
 
-    protected final void readFile() throws Exception {
+    protected final boolean readFile() throws Exception {
         // First try the classpath
         URL localUrl = locateOnClasspath(filename);
         if (localUrl == null) {
@@ -121,7 +123,8 @@ public class Fragment implements Comparable<Fragment> {
                 localUrl = localPath.toUri().toURL();
             } else {
                 LOGGER.error("Cannot load file \"{}\"!", filename);
-                throw new Exception(filename + " (The system cannot find the file specified)");
+                //throw new Exception(filename + " (The system cannot find the file specified)");
+                return false;
             }
         }
         path = Paths.get(localUrl.toURI());
@@ -173,6 +176,7 @@ public class Fragment implements Comparable<Fragment> {
 
         interpretFrontMatterGeneral();
         parseContent(br);
+        return true;
     }
 
     /**
