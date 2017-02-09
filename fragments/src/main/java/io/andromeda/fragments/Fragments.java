@@ -60,29 +60,41 @@ public class Fragments {
     private String urlPath;
     private String dataDirectory;
     private String overviewTemplate;
-    private String defaultTemplate;
     private Map<String, Object> defaultContext;
+    //Get the categories/tags sorted by name or the no of Fragments of this cat/tag
+    private Map<String, List<Fragment>> categories;
+    private Map<String, List<Fragment>> tags;
 
-    public Fragments(Application application, String urlPath, String dataDirectory, Configuration configuration) {
-        this(application, urlPath, dataDirectory, "", "", null, configuration);
+    private Comparator<Fragment> byOrder = new Comparator<Fragment>() {
+        @Override
+        public int compare(Fragment left, Fragment right) {
+            return left.order - right.order;
+        }
+    };
+
+    private Comparator<Fragment> byTitle = new Comparator<Fragment>() {
+        @Override
+        public int compare(Fragment left, Fragment right) {
+            return left.title.compareToIgnoreCase(right.title);
+        }
+    };
+
+    public Fragments(Application application, Configuration configuration) {
+        this(application, null, configuration);
     }
 
     /**
      * Main class to hold all fragments and to create all routes automatically.
      *
      * @param application Reference to PippoApplication. Needed to create the routes for the files.
-     * @param urlPath Path of the base URL. Used for the automatically created routes. Full path will be urlPath/slug.
-     * @param dataDirectory Directory containing the Markdown files.
-     * @param overviewTemplate Template to be used for the overview page, e.g urlPath
-     * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside the front matter.
      * @param defaultContext Default context to be used when rending the overview and the individual page. Can be extended via the front matter.
+     * @param configuration The configuration object holding all necessary information to create a Fragments instance.
      */
-    public Fragments(Application application, String urlPath, String dataDirectory, String overviewTemplate, String defaultTemplate, Map<String, Object> defaultContext, Configuration configuration) {
+    public Fragments(Application application, Map<String, Object> defaultContext, Configuration configuration) {
         this.application = application;
-        this.urlPath = urlPath;
-        this.dataDirectory = dataDirectory;
-        this.overviewTemplate = overviewTemplate;
-        this.defaultTemplate = defaultTemplate;
+        this.urlPath = configuration.getUrlPath();
+        this.dataDirectory = configuration.getDataDirectory().normalize().toString();
+        this.overviewTemplate = configuration.getOverviewTemplate();
         if (defaultContext == null) {
             this.defaultContext = new TreeMap<>();
         } else {
@@ -114,6 +126,7 @@ public class Fragments {
 
         if (dataDirectory == null) {
             LOGGER.error("The data directory is empty! Fragments: {}", configuration.getName());
+            return;
         }
 
         /*LOGGER.info("PROTOCOL: " + dataDirectory.getProtocol());
@@ -126,7 +139,7 @@ public class Fragments {
             }
         }*/
 
-        readDirectory(dataDirectory.toString());
+        readDirectory(dataDirectory);
         prepareFragments();
         registerFragments();
     }
@@ -144,8 +157,8 @@ public class Fragments {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(directory))) {
             for (Path path : directoryStream) {
                 try {
-                    if (path.toString().toLowerCase().endsWith(configuration.extension)) {
-                        Fragment fragment = new Fragment(path.normalize().toString(), urlPath, defaultTemplate, application.getLanguages().getRegisteredLanguages().get(0), configuration);
+                    if (path.toString().toLowerCase().endsWith(configuration.getExtension())) {
+                        Fragment fragment = new Fragment(path.normalize().toString(), application.getLanguages().getRegisteredLanguages().get(0), configuration);
                         if (fragment.visible) {
                             visibleFragments.add(fragment);
                         }
@@ -186,7 +199,7 @@ public class Fragments {
                 }
             });
         }
-        if (configuration.registerOverviewRoute) {
+        if (configuration.registerOverviewRoute()) {
             String route = Utilities.removeTrailingSlash(urlPath);
             application.GET(route, new RouteHandler() {
                 @Override
@@ -214,12 +227,12 @@ public class Fragments {
     private void prepareFragments(){
         int counter = 0;
         for (Fragment fragment: allFragments) {
-            fragment.full_url = configuration.protocol + configuration.domain + fragment.url;
+            fragment.full_url = configuration.getProtocol() + configuration.getDomain() + fragment.url;
             //Create the URLEncoded  url
             try {
                 fragment.full_url_encoded = URLEncoder.encode(fragment.full_url, "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                LOGGER.error("Error: Cannot convert URL: " + fragment.url + "! " + e);
+                LOGGER.error("Error: Cannot convert URL: {}! {}", fragment.url, e);
             }
 
             if (fragment.order == Integer.MIN_VALUE) {
@@ -257,17 +270,4 @@ public class Fragments {
         return configuration.getName();
     }
 
-    public Comparator<Fragment> byOrder = new Comparator<Fragment>() {
-        @Override
-        public int compare(Fragment left, Fragment right) {
-            return left.order - right.order;
-        }
-    };
-
-    public Comparator<Fragment> byTitle = new Comparator<Fragment>() {
-        @Override
-        public int compare(Fragment left, Fragment right) {
-            return left.title.compareToIgnoreCase(right.title);
-        }
-    };
 }

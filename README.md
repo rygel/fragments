@@ -19,6 +19,7 @@ The main features are:
 ### Todo
 - Expiring files
 - Categories and Tags
+- Save the access statistics of the Fragments into a DB
 
 ## Other Features
 - Supports obfuscation of email addresses via [flexmark-java](https://github.com/vsch/flexmark-java) (in the Markdown files) as well as directly via the default context.
@@ -91,3 +92,5 @@ Is used to configure the following properties of a Fragment:
 - [SnakeYaml](https://bitbucket.org/asomov/snakeyaml) as a YAML (front matter) parser.
 - [Fast JSON](https://github.com/alibaba/fastjson) as a JSON (front matter) parser.
 - [Apache Commons IO](https://commons.apache.org/proper/commons-io/) for convenience file name handling.
+- [SLF4J](http://www.slf4j.org) as a logging adapter.
+- [Logback](http://logback.qos.ch) as the logger implementation.

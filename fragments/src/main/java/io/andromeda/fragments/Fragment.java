@@ -60,7 +60,7 @@ public class Fragment implements Comparable<Fragment> {
     /**
      * The logger instance for this class.
      */
-    private final static Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
 
     public Map<String, Object> frontMatter = new TreeMap<>();
     protected Map<String, Object> context = new TreeMap<>();
@@ -90,23 +90,21 @@ public class Fragment implements Comparable<Fragment> {
      * Constructor
      *
      * @param filename        The filename of the Markdown file.
-     * @param baseUrl         The base URL of the Fragment.
-     * @param template        The name of the template, taken from the Fragments configuration.
      * @param defaultLanguage The default language for this fragment.
      * @param configuration   The Configuration object.
      */
-    public Fragment(String filename, String baseUrl, String template, String defaultLanguage, Configuration configuration) {
+    public Fragment(String filename, String defaultLanguage, Configuration configuration) {
         this.configuration = configuration;
         this.filename = filename;
-        this.template = template;
-        this.url = baseUrl;
-        this.full_url = baseUrl;
+        this.template = configuration.getDefaultTemplate();
+        this.url = configuration.getUrlPath();
+        this.full_url = configuration.getUrlPath();
         this.defaultLanguage = defaultLanguage;
         try {
             readFile();
             LOGGER.info("Loaded: {}", filename);
-        } catch (Exception ex) {
-            LOGGER.error("Error reading file (" + filename + "): " + ex.toString());
+        } catch (Exception e) {
+            LOGGER.error("Error reading file ({}): {}", filename, e);
         }
     }
 
@@ -116,18 +114,18 @@ public class Fragment implements Comparable<Fragment> {
 
     protected final void readFile() throws Exception {
         // First try the classpath
-        URL url = locateOnClasspath(filename);
-        if (url == null) {
-            Path path = Paths.get(filename);
-            if (path.toFile().exists()) {
-                url = path.toUri().toURL();
+        URL localUrl = locateOnClasspath(filename);
+        if (localUrl == null) {
+            Path localPath = Paths.get(filename);
+            if (localPath.toFile().exists()) {
+                localUrl = localPath.toUri().toURL();
             } else {
                 LOGGER.error("Cannot load file \"{}\"!", filename);
                 throw new Exception(filename + " (The system cannot find the file specified)");
             }
         }
-        path = Paths.get(url.toURI());
-        BufferedReader br = new BufferedReader(new FileReader(url.getFile()));
+        path = Paths.get(localUrl.toURI());
+        BufferedReader br = new BufferedReader(new FileReader(localUrl.getFile()));
         final String delimiter;
 
         // detect YAML front matter
@@ -201,13 +199,13 @@ public class Fragment implements Comparable<Fragment> {
             slug = Utilities.slugify(slug);
             frontMatter.put(Constants.SLUG_ID, slug);
         }
-        if (configuration.routeType == RouteType.ARTICLES) {
+        if (configuration.getRouteType() == RouteType.ARTICLES) {
             url = url + slug;
             //full_url = full_url + slug;
         } else {
             //Do the date handling
-            String date = (String) frontMatter.get(Constants.DATE_ID);
-            if (date == null) {
+            String localDate = (String) frontMatter.get(Constants.DATE_ID);
+            if (localDate == null) {
                 LOGGER.error("Date is not available for a fragment of type Blog!");
             } else {
                 try {
@@ -219,7 +217,7 @@ public class Fragment implements Comparable<Fragment> {
                                     .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
                                     .parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
                                     .toFormatter();
-                    dateTime = ZonedDateTime.parse(date, formatter);
+                    dateTime = ZonedDateTime.parse(localDate, formatter);
                     this.date = Date.from(dateTime.toInstant());
                 } catch (DateTimeParseException e) {
                     LOGGER.error(e.toString());
@@ -236,8 +234,8 @@ public class Fragment implements Comparable<Fragment> {
             template = tempTemplate;
         }
         title = (String) frontMatter.get(Constants.TITLE_ID);
-        String visible = (String) frontMatter.getOrDefault(Constants.VISIBLE_ID, "true");
-        if ("true".equals(visible)) {
+        String localVisible = (String) frontMatter.getOrDefault(Constants.VISIBLE_ID, "true");
+        if ("true".equals(localVisible)) {
             this.visible = true;
         }
         order = Integer.parseInt((String) frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
@@ -262,34 +260,34 @@ public class Fragment implements Comparable<Fragment> {
      * @throws IOException
      */
     protected void parseContent(BufferedReader br) throws IOException {
-        String buffer = "";
+        StringBuilder buffer = new StringBuilder();
         String currentLanguage = defaultLanguage;
 
         String line = br.readLine();
         while (line != null) {
             if (line.matches("--- \\w{2} ---")) {
-                languages.put(currentLanguage, parseMarkdown(buffer));
-                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer)));
+                languages.put(currentLanguage, parseMarkdown(buffer.toString()));
+                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer.toString())));
                 currentLanguage = line.substring(4, 6);
-                buffer = "";
+                buffer = new StringBuilder();
             } else if (line.matches("--- \\w{2}-\\w{2} ---")) {
-                languages.put(currentLanguage, parseMarkdown(buffer));
-                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer)));
+                languages.put(currentLanguage, parseMarkdown(buffer.toString()));
+                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer.toString())));
                 currentLanguage = line.substring(4, 9);
-                buffer = "";
+                buffer = new StringBuilder();
             } else {
-                buffer = buffer + line;
+                buffer.append(line);
             }
             line = br.readLine();
             if (line != null) {
                 line = line + "\n";
             }
         }
-        languages.put(currentLanguage, parseMarkdown(buffer));
-        languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer)));
+        languages.put(currentLanguage, parseMarkdown(buffer.toString()));
+        languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer.toString())));
     }
 
-    protected String parseMarkdown(String content) {
+    protected String parseMarkdown(final String content) {
         Parser parser = Parser.builder().build();
         Node document = parser.parse(content);
         HtmlRenderer.Builder builder = HtmlRenderer.builder();
@@ -302,12 +300,13 @@ public class Fragment implements Comparable<Fragment> {
         return renderer.render(document);
     }
 
-    public void update(String language) {
-        if (language == null) {
-            language = defaultLanguage;
+    public void update(final String language) {
+        String localLanguage = language;
+        if (localLanguage == null) {
+            localLanguage = defaultLanguage;
         }
-        content = languages.get(language);
-        preview = languagesPreview.get(language);
+        content = languages.get(localLanguage);
+        preview = languagesPreview.get(localLanguage);
         if (content == null) {
             content = languages.get(defaultLanguage);
             preview = languagesPreview.get(defaultLanguage);

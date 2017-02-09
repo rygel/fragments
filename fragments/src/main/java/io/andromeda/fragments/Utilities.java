@@ -25,7 +25,9 @@ import java.util.Random;
  */
 public class Utilities {
     /** The logger instance for this class. */
-    private final static Logger LOGGER = LoggerFactory.getLogger(Utilities.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Utilities.class);
+
+    private static Random random = new Random(0x2626);
 
     /**
      * Protect the constructor.
@@ -36,8 +38,8 @@ public class Utilities {
 
     /**
      * Remove characters which are not allowed in a slug.
-     * @param textToSlug
-     * @return
+     * @param textToSlug The string which will be converted into a slug.
+     * @return The converted string.
      */
     public static String slugify(String textToSlug) {
         return textToSlug.replaceAll("\\s+|/|\\|:", "_").toLowerCase();
@@ -49,34 +51,12 @@ public class Utilities {
      * @return the pattern without the trailing slash.
      */
     public static String removeTrailingSlash(String pattern) {
-        if ((!pattern.equals("/")) && (pattern.endsWith("/"))) {
+        if ((!"/".equals(pattern)) && (pattern.endsWith("/"))) {
             return pattern.substring(0, pattern.length() - 1);
         } else {
             return pattern;
         }
     }
-
-    /**
-     * Checks if a directory exists.
-     * @param newDirectory
-     * @return
-     */
-    /*public static String checkIfDirectoryExists(String newDirectory) {
-        File file = new File(newDirectory);
-        Path path = Paths.get(file.getAbsolutePath());
-        if (!Files.isDirectory(path)) {
-            LOGGER.warn("The directory \"{}\" does not exist! Creating it.", newDirectory);
-            try {
-                Files.createDirectories(path);
-            } catch (IOException e) {
-                LOGGER.error("Cannot create directory \"{}\"!", e.getMessage());
-                System.exit(1);
-            }
-        }
-        return file.getAbsolutePath();
-    }*/
-
-  private static Random random = new Random(0x2626);
 
   public static String obfuscate(String email) {
     StringBuilder sb = new StringBuilder();

@@ -17,7 +17,6 @@ package io.andromeda.fragments.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import io.andromeda.fragments.Configuration;
 import io.andromeda.fragments.Fragment;
 import io.andromeda.fragments.Fragments;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ public class DBSupport {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(DBSupport.class);
 
-    private int DEFAULT_TOP_FRAGMENTS = 5;
+    private int defaultTopFragments = 5;
     private DBConfiguration configuration;
     private String tableName;
 
@@ -66,7 +65,7 @@ public class DBSupport {
 
     public boolean createTable() {
         boolean result = true;
-        String createTable = String.format("CREATE TABLE {}(id int primary key, name varchar(1000), clicks bigint)", configuration.getDBName());
+        String createTable = String.format("CREATE TABLE %s(id int primary key, name varchar(1000), clicks bigint)", configuration.getDBName());
         //String sql = "SELECT id FROM author WHERE p_username = ':p_username'";
 
         try (Connection con = sql2o.open()) {
@@ -79,8 +78,8 @@ public class DBSupport {
     }
 
     public void addClick(Fragment fragment) {
-        String sql = String.format("SELECT clicks FROM {0} where name = ':name'", configuration.getDBName());
-        String sqlInsert = String.format("insert into {0}(name, clicks) values (:name, :clicks)", configuration.getDBName());
+        String sql = String.format("SELECT clicks FROM %s where name = ':name'", configuration.getDBName());
+        String sqlInsert = String.format("insert into %s(name, clicks) values (:name, :clicks)", configuration.getDBName());
 
         try (Connection con = sql2o.open()) {
             Long clicks = con.createQuery(sql)
@@ -100,7 +99,7 @@ public class DBSupport {
     }
 
     public List<Fragment> getTopFragments() {
-        return getTopFragments(DEFAULT_TOP_FRAGMENTS);
+        return getTopFragments(defaultTopFragments);
     }
 
     public List<Fragment> getTopFragments(int numberOfTopFragments) {
