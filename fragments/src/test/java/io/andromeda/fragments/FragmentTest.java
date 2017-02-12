@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -45,6 +46,19 @@ public class FragmentTest extends Assert {
                 return ((LoggingEvent)argument).getFormattedMessage().contains("Cannot load file \"file_not_found.md\"");
             }
         }));
+    }
+
+    @Test
+    public void testFragmentTags() throws Exception {
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        final Appender mockAppender = mock(Appender.class);
+        when(mockAppender.getName()).thenReturn("MOCK");
+        root.addAppender(mockAppender);
+
+        Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/categories_and_tags_json.md", "en", new Configuration("Test", "/", Paths.get("")));
+        List tags = (List)fragment.frontMatter.get("tags");
+        int size = tags.size();
+        System.out.print(tags.get(0));
     }
 
     /*

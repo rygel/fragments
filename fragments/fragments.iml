@@ -12,20 +12,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark:0.13.3" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util:0.13.3" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-ext-tables:0.13.3" level="project" />
-    <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-formatter:0.13.3" level="project" />
-    <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
-    <orderEntry type="library" name="Maven: org.sql2o:sql2o:1.6.0-RC3" level="project" />
-    <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:2.6.0" level="project" />
-    <orderEntry type="library" name="Maven: com.h2database:h2:1.4.193" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-classic:1.1.9" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: ch.qos.logback:logback-core:1.1.9" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-core:2.7.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy:1.6.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: net.bytebuddy:byte-buddy-agent:1.6.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:2.5" level="project" />
     <orderEntry type="library" name="Maven: ro.pippo:pippo-core:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
     <orderEntry type="library" name="Maven: ro.pippo:pippo-snakeyaml:1.1.0" level="project" />

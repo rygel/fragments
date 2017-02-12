@@ -48,8 +48,14 @@ public class DBSupport {
     }
 
     public boolean initialize() {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            LOGGER.error(e.toString());
+        }
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDataSourceClassName(configuration.getDriver());
+        //hikariConfig.setDriverClassName("org.h2.Driver");
         hikariConfig.setUsername(configuration.getUsername());
         hikariConfig.setPassword(configuration.getPassword());
         hikariConfig.addDataSourceProperty("URL", configuration.getConnection());

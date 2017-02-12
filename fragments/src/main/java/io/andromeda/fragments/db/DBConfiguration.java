@@ -25,16 +25,17 @@ import java.nio.file.Paths;
  */
 public class DBConfiguration {
     private final String driver = "org.h2.jdbcx.JdbcDataSource";
+    //private final String driver = "org.h2.Driver";
     private String connection = "jdbc:h2:./data/fragments/h2/";
-    private final String username = "";
-    private final String password = "";
+    private final String username = "fragments";
+    private final String password = "1234";
     private final String name;
 
     public DBConfiguration(Fragments fragments) {
         String nameTemplate = "fragments_clicks_";
         name = nameTemplate + fragments.getName();
         Path path = Paths.get(fragments.getDataDirectory()).normalize().toAbsolutePath();
-        String dbFileLocation = path.getParent().toString();
+        String dbFileLocation = path.getParent().toString() + "/";
         /* Append the name of the Fragments instance to the connection path to be able to distinguish between different
          * databeses. */
         dbFileLocation += fragments.getName();

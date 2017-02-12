@@ -62,8 +62,10 @@ public class Fragments {
     private String overviewTemplate;
     private Map<String, Object> defaultContext;
     //Get the categories/tags sorted by name or the no of Fragments of this cat/tag
-    private Map<String, List<Fragment>> categories;
-    private Map<String, List<Fragment>> tags;
+    private Map<String, List<Fragment>> allCategories = new TreeMap<>();
+    private Map<String, List<Fragment>> visibleCategories = new TreeMap<>();
+    private Map<String, List<Fragment>> allTags = new TreeMap<>();
+    private Map<String, List<Fragment>> visibleTags = new TreeMap<>();
 
     private Comparator<Fragment> byOrder = new Comparator<Fragment>() {
         @Override
@@ -158,7 +160,12 @@ public class Fragments {
             for (Path path : directoryStream) {
                 try {
                     if (path.toString().toLowerCase().endsWith(configuration.getExtension())) {
-                        Fragment fragment = new Fragment(path.normalize().toString(), application.getLanguages().getRegisteredLanguages().get(0), configuration);
+                        List<String> languages = application.getLanguages().getRegisteredLanguages();
+                        String defaultLanguage = "en";
+                        if (!languages.isEmpty()) {
+                            defaultLanguage = languages.get(0);
+                        }
+                        Fragment fragment = new Fragment(path.normalize().toString(), defaultLanguage, configuration);
                         if (fragment.visible) {
                             visibleFragments.add(fragment);
                         }
@@ -239,6 +246,43 @@ public class Fragments {
                 fragment.order = counter;
             }
             counter++;
+
+            handleTaxonomies(fragment, fragment.getTags(), allTags, visibleTags);
+            handleTaxonomies(fragment, fragment.getCategories(), allCategories, visibleCategories);
+        }
+    }
+
+    /**
+     * Method to filter/sort the taxonomies (tags or categories) into the two result maps, allTags/allCategories and
+     * visibleTags/visibleCategories. The result maps have the tag/category names as key and and a list of all Fragments
+     * of this tag/category as the value.
+     * @param fragment The current Fragment.
+     * @param taxonomies The list of the taxonomies of this Fragment, either the tags or categories.
+     * @param allTaxonomies Reference to the all Taxonomy, either allTags or allCategories.
+     * @param visibleTaxonomies Reference to the visible Taxonomy, either visibleTags or visibleCategories.
+     */
+    private void handleTaxonomies(Fragment fragment, List<String> taxonomies, Map<String, List<Fragment>> allTaxonomies,
+                                  Map<String, List<Fragment>> visibleTaxonomies) {
+        for (int i = 0; i < taxonomies.size(); i++) {
+            List<Fragment> current;
+            String taxName = taxonomies.get(i);
+            if (allTaxonomies.containsKey(taxName)) {
+                current = allTaxonomies.get(taxName);
+            } else {
+                current = new ArrayList<>();
+                allTaxonomies.put(taxName, current);
+            }
+            current.add(fragment);
+            if (fragment.visible) {
+                List<Fragment> currentVisible;
+                if (visibleTaxonomies.containsKey(taxName)) {
+                    currentVisible = visibleTaxonomies.get(taxName);
+                } else {
+                    currentVisible = new ArrayList<>();
+                    visibleTaxonomies.put(taxName, currentVisible);
+                }
+                currentVisible.add(fragment);
+            }
         }
     }
 
@@ -268,6 +312,38 @@ public class Fragments {
 
     public String getName() {
         return configuration.getName();
+    }
+
+    /**
+     * Gets a map of all tags (including invisible Fragments) of this Fragments instance.
+     * @return A map of all tags (including invisible Fragments) of this Fragments instance.
+     */
+    public Map<String, List<Fragment>> getAllTags() {
+        return allTags;
+    }
+
+    /**
+     * Gets a map of only the tags of the visible Fragments of this Fragments instance.
+     * @return A map of only the tags of the visible Fragments of this Fragments instance.
+     */
+    public Map<String, List<Fragment>> getVisibleTags() {
+        return visibleTags;
+    }
+
+    /**
+     * Gets a map of all categories (including invisible Fragments) of this Fragments instance.
+     * @return A map of all categories (including invisible Fragments) of this Fragments instance.
+     */
+    public Map<String, List<Fragment>> getAllCategories() {
+        return allCategories;
+    }
+
+    /**
+     * Gets a map of only the categories of the visible Fragments of this Fragments instance.
+     * @return A map of only the categories of the visible Fragments of this Fragments instance.
+     */
+    public Map<String, List<Fragment>> getVisibleCategories() {
+        return visibleCategories;
     }
 
 }

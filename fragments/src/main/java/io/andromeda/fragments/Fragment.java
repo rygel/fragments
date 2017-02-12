@@ -85,6 +85,8 @@ public class Fragment implements Comparable<Fragment> {
     public Map<String, String> languages = new TreeMap<>();
     public Map<String, String> languagesPreview = new TreeMap<>();
     public Map<String, String> languagesTitles = new TreeMap<>();
+    private List<String> categories = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 
     /**
      * Constructor
@@ -243,6 +245,9 @@ public class Fragment implements Comparable<Fragment> {
             this.visible = true;
         }
         order = Integer.parseInt((String) frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
+
+        tags = (List)frontMatter.get("tags");
+        categories = (List)frontMatter.get("categories");
     }
 
     /**
@@ -345,6 +350,22 @@ public class Fragment implements Comparable<Fragment> {
     @Override
     public int compareTo(Fragment other) {
         return this.order - other.order;
+    }
+
+    /**
+     * Gets the list of all tags of this Fragment.
+     * @return The list of all tags of this Fragment.
+     */
+    public List<String> getTags() {
+        return tags;
+    }
+
+    /**
+     * Gets the list of all categories of this Fragment.
+     * @return The list of all categories of this Fragment.
+     */
+    public List<String> getCategories() {
+        return categories;
     }
 
 }
