@@ -55,7 +55,7 @@ public class FragmentTest extends Assert {
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
 
-        Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/categories_and_tags_json.md", "en", new Configuration("Test", "/", Paths.get("")));
+        Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/categories_and_tags_json.md", "en", new Configuration("Test", "/", Paths.get("")));
         List tags = (List)fragment.frontMatter.get("tags");
         int size = tags.size();
         System.out.print(tags.get(0));
