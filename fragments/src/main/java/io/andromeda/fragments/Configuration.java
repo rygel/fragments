@@ -29,7 +29,8 @@ public class Configuration {
     private String protocol = "https://";
     private RouteType routeType = RouteType.ARTICLES;
     private boolean registerOverviewRoute = true;
-    /** Name of the Fragments instance. Used for error messages to aid debugging in case files cannot be loaded properly and for naming the database table. */
+    /** Name of the Fragments instance. Used for error messages to aid debugging in case files cannot be loaded
+     * properly and for naming the database table. */
     private String name;
     private String urlPath;
     private Path dataDirectory;
@@ -65,7 +66,8 @@ public class Configuration {
      * @param urlPath Path of the base URL. Used for the automatically created routes. Full path will be urlPath/slug.
      * @param dataDirectory Directory containing the Markdown files.
      * @param overviewTemplate Template to be used for the overview page, e.g urlPath.
-     * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside the front matter.
+     * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside
+     *                        the front matter.
      */
     public Configuration(String name, String urlPath, Path dataDirectory, String overviewTemplate, String defaultTemplate){
         this.name = name;

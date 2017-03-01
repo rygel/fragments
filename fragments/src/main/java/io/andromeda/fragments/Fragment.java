@@ -246,8 +246,8 @@ public class Fragment implements Comparable<Fragment> {
         }
         order = Integer.parseInt((String) frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
 
-        tags = (List)frontMatter.get("tags");
-        categories = (List)frontMatter.get("categories");
+        tags = (List)frontMatter.get(Constants.TAGS_ID);
+        categories = (List)frontMatter.get(Constants.CATEGORIES_ID);
     }
 
     /**

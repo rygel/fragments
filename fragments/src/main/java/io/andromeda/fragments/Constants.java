@@ -27,6 +27,8 @@ public class Constants {
     public static final String PREVIEW_ID = "preview";
     public static final String ORDER_ID = "order";
     public static final String DATE_ID = "date";
+    public static final String TAGS_ID = "tags";
+    public static final String CATEGORIES_ID = "categories";
 
     private Constants() {
 

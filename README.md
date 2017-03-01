@@ -15,10 +15,10 @@ The main features are:
 - Invisible Pages (e.g. drafts)
 - Generation of preview texts
 - Support of multiple languages
+- Categories and Tags
 
 ### Todo
 - Expiring files
-- Categories and Tags
 - Save the access statistics of the Fragments into a DB
 
 ## Other Features

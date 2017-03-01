@@ -233,6 +233,8 @@ public class Fragments {
      */
     private void prepareFragments(){
         int counter = 0;
+        /* Make sure that the fragments are ordered by Title before changing/overwriting the order! */
+        allFragments.sort(byTitle);
         for (Fragment fragment: allFragments) {
             fragment.full_url = configuration.getProtocol() + configuration.getDomain() + fragment.url;
             //Create the URLEncoded  url
@@ -263,25 +265,27 @@ public class Fragments {
      */
     private void handleTaxonomies(Fragment fragment, List<String> taxonomies, Map<String, List<Fragment>> allTaxonomies,
                                   Map<String, List<Fragment>> visibleTaxonomies) {
-        for (int i = 0; i < taxonomies.size(); i++) {
-            List<Fragment> current;
-            String taxName = taxonomies.get(i);
-            if (allTaxonomies.containsKey(taxName)) {
-                current = allTaxonomies.get(taxName);
-            } else {
-                current = new ArrayList<>();
-                allTaxonomies.put(taxName, current);
-            }
-            current.add(fragment);
-            if (fragment.visible) {
-                List<Fragment> currentVisible;
-                if (visibleTaxonomies.containsKey(taxName)) {
-                    currentVisible = visibleTaxonomies.get(taxName);
+        if (taxonomies != null) {
+            for (int i = 0; i < taxonomies.size(); i++) {
+                List<Fragment> current;
+                String taxName = taxonomies.get(i);
+                if (allTaxonomies.containsKey(taxName)) {
+                    current = allTaxonomies.get(taxName);
                 } else {
-                    currentVisible = new ArrayList<>();
-                    visibleTaxonomies.put(taxName, currentVisible);
+                    current = new ArrayList<>();
+                    allTaxonomies.put(taxName, current);
                 }
-                currentVisible.add(fragment);
+                current.add(fragment);
+                if (fragment.visible) {
+                    List<Fragment> currentVisible;
+                    if (visibleTaxonomies.containsKey(taxName)) {
+                        currentVisible = visibleTaxonomies.get(taxName);
+                    } else {
+                        currentVisible = new ArrayList<>();
+                        visibleTaxonomies.put(taxName, currentVisible);
+                    }
+                    currentVisible.add(fragment);
+                }
             }
         }
     }

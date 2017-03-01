@@ -2,7 +2,6 @@ package io.andromeda.fragments;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.andromeda.fragments.Fragment;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
