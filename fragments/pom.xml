@@ -5,14 +5,14 @@
     <artifactId>fragments</artifactId>
     <groupId>io.andromeda</groupId>
     <packaging>jar</packaging>
-    <version>0.0.16</version>
+    <version>0.0.17-SNAPSHOT</version>
     <url>https://github.com/rygel/fragments</url>
     <description>A pages collection engine for the Pippo Java Micro Framework.</description>
 
     <parent>
         <artifactId>fragments-parent</artifactId>
         <groupId>io.andromeda</groupId>
-        <version>0.0.16</version>
+        <version>0.0.17-SNAPSHOT</version>
     </parent>
 
     <dependencies>
