@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static io.andromeda.fragments.Fragments.byOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -56,11 +57,24 @@ public class FragmentsTest {
         String currentPath = System.getProperty("user.dir");
         Configuration configuration = new Configuration(fragmentsName, "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/"));
         Fragments fragments = new Fragments(new Application(), configuration);
-        assertThat(fragmentsName, equalTo(fragments.getName()));
+        assertThat(fragments.getName(), equalTo(fragmentsName));
         List<Fragment> items = fragments.getFragments(true);
         for (int i = 0; i < items.size(); i++) {
             assertThat(items.get(i).getName(), equalTo(fragmentsName));
         }
+    }
+
+    /** Test that the order is correctly overwritten manually. */
+    @Test
+    public void testFragmentsOrder() throws Exception {
+        String currentPath = System.getProperty("user.dir");
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/order/"));
+        Fragments fragments = new Fragments(new Application(), configuration);
+        List<Fragment> items = fragments.getVisibleFragmentOrdered(byOrder);
+        assertThat(items.get(0).getTitle(), equalTo("Q as Q"));
+        assertThat(items.get(1).getTitle(), equalTo("A as Andromeda"));
+        assertThat(items.get(2).getTitle(), equalTo("P as Pippo"));
+        assertThat(items.get(3).getTitle(), equalTo("Z as the End"));
     }
 
 }

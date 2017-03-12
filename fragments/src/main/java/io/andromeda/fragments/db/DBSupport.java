@@ -47,7 +47,7 @@ public class DBSupport {
         initialize();
     }
 
-    public boolean initialize() {
+    public final boolean initialize() {
         try {
             Class.forName("org.h2.Driver");
         } catch (ClassNotFoundException e) {

@@ -83,7 +83,7 @@ public class Configuration {
      * Returns the extension of the fragments files of this instance.
      * @return The extension of the fragments files of this Fragments instance.
      */
-    public String getExtension() {
+    public final String getExtension() {
         return extension;
     }
 
@@ -91,7 +91,7 @@ public class Configuration {
      * Returns the domain name of this instance.
      * @return The domain name of this Fragments instance.
      */
-    public String getDomain() {
+    public final String getDomain() {
         return domain;
     }
 
@@ -99,7 +99,7 @@ public class Configuration {
      * Returns the protocol (http:// or https://) of this instance.
      * @return The protocol of this Fragments instance.
      */
-    public String getProtocol() {
+    public final String getProtocol() {
         return protocol;
     }
 
@@ -107,11 +107,11 @@ public class Configuration {
      * Returns the RouteType of this instance.
      * @return The RouteType of this Fragments instance.
      */
-    public RouteType getRouteType() {
+    public final RouteType getRouteType() {
         return routeType;
     }
 
-    public boolean registerOverviewRoute() {
+    public  final boolean registerOverviewRoute() {
         return registerOverviewRoute;
     }
 
@@ -119,7 +119,7 @@ public class Configuration {
      * Returns the name of this instance.
      * @return The name of this Fragments instance.
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
@@ -127,7 +127,7 @@ public class Configuration {
      * Returns the path of the base URL of this instance.
      * @return The name of this Fragments instance.
      */
-    public String getUrlPath() {
+    public final String getUrlPath() {
         return urlPath;
     }
 
@@ -135,7 +135,7 @@ public class Configuration {
      * Returns the directory containing the Markdown files of this instance.
      * @return The directory containing the Markdown files of this Fragments instance.
      */
-    public Path getDataDirectory() {
+    public final Path getDataDirectory() {
         return dataDirectory;
     }
 
@@ -143,7 +143,7 @@ public class Configuration {
      * Returns the template to be used for the overview page of this instance.
      * @return The template to be used for the overview page of this Fragments instance.
      */
-    public String getOverviewTemplate() {
+    public final String getOverviewTemplate() {
         return overviewTemplate;
     }
 
@@ -151,7 +151,7 @@ public class Configuration {
      * Returns the Template to be used for the individual page of this instance.
      * @return The Template to be used for the individual page of this Fragments instance.
      */
-    public String getDefaultTemplate() {
+    public final String getDefaultTemplate() {
         return defaultTemplate;
     }
 
@@ -161,7 +161,7 @@ public class Configuration {
      * Sets the extension of the fragments files for this Fragments instance. The default one is ".md";
      * @param extension The new extension.
      */
-    public void setExtension(String extension) {
+    public final void setExtension(String extension) {
         this.extension = extension;
     }
 
@@ -169,7 +169,7 @@ public class Configuration {
      * Sets the domain name for this Fragments instance. It is needed to construct the encoded URL of a Fragment.
      * @param domain The new domain name.
      */
-    public void setDomain(String domain) {
+    public final void setDomain(String domain) {
         this.domain = domain;
     }
 
@@ -177,7 +177,7 @@ public class Configuration {
      * Sets the protocol for this Fragments instance. The default one is https://.
      * @param protocol The new protocol.
      */
-    public void setProtocol(String protocol) {
+    public final void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
@@ -185,7 +185,7 @@ public class Configuration {
      * Sets the @see RouteType for this Fragments instance. The default one is @RouteType.ARTICLES.
      * @param routeType The new RouteType.
      */
-    public void setRouteType(RouteType routeType) {
+    public final void setRouteType(RouteType routeType) {
         this.routeType = routeType;
     }
 
@@ -194,7 +194,7 @@ public class Configuration {
      * Can only be set before creating the Fragments instance!
      * @param registerOverviewRoute Enables/disables the route for overview page.
      */
-    public void setRegisterOverviewRoute(boolean registerOverviewRoute) {
+    public final void setRegisterOverviewRoute(boolean registerOverviewRoute) {
         this.registerOverviewRoute = registerOverviewRoute;
     }
 

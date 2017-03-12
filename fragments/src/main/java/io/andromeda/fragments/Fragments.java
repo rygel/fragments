@@ -67,28 +67,14 @@ public class Fragments {
     private Map<String, List<Fragment>> allTags = new TreeMap<>();
     private Map<String, List<Fragment>> visibleTags = new TreeMap<>();
 
-    public static final Comparator<Fragment> byOrder = new Comparator<Fragment>() {
-        @Override
-        public int compare(Fragment left, Fragment right) {
-            return left.order - right.order;
-        }
-    };
+    public static final Comparator<Fragment> byOrder = Comparator.comparingInt(Fragment::getOrder);
 
-    //public static final  Comparator<Fragment> byOrder = Comparator.comparingInt(fragment -> fragment.order);
+    public static final Comparator<Fragment> byOrderThenTitle
+            = Comparator.comparingInt(Fragment::getOrder).thenComparing(Fragment::getTitle);
 
-    public static final Comparator<Fragment> byTitle = new Comparator<Fragment>() {
-        @Override
-        public int compare(Fragment left, Fragment right) {
-            return left.title.compareToIgnoreCase(right.title);
-        }
-    };
+    public static final Comparator<Fragment> byTitle = Comparator.comparing(Fragment::getTitle);
 
-    public static final Comparator<Fragment> byDate = new Comparator<Fragment>() {
-        @Override
-        public int compare(Fragment left, Fragment right) {
-            return left.date.compareTo(right.date);
-        }
-    };
+    public static final Comparator<Fragment> byDate = Comparator.comparing(Fragment::getDate);
 
     public Fragments(Application application, Configuration configuration) {
         this(application, null, configuration);
@@ -242,7 +228,7 @@ public class Fragments {
     private void prepareFragments(){
         int counter = 0;
         /* Make sure that the fragments are ordered by Title before changing/overwriting the order! */
-        allFragments.sort(byTitle);
+        allFragments.sort(byOrderThenTitle);
         for (Fragment fragment: allFragments) {
             fragment.full_url = configuration.getProtocol() + configuration.getDomain() + fragment.url;
             //Create the URLEncoded  url
@@ -252,8 +238,8 @@ public class Fragments {
                 LOGGER.error("Error: Cannot convert URL: {}! {}", fragment.url, e);
             }
 
-            if (fragment.order == Integer.MIN_VALUE) {
-                fragment.order = counter;
+            if (fragment.getOrder() == Integer.MAX_VALUE) {
+                fragment.setOrder(counter);
             }
             counter++;
 

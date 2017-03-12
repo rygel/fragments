@@ -75,7 +75,7 @@ public class Fragment implements Comparable<Fragment> {
     public boolean visible = false;
     public String template;
     private String name;
-    public String title;
+    private String title;
     public String slug;
     public String url;
     public String full_url;
@@ -83,10 +83,10 @@ public class Fragment implements Comparable<Fragment> {
     public String content;
     public String preview;
     public String preview_text_only;
-    public int order;
+    private int order;
     public String defaultLanguage;
     public ZonedDateTime dateTime;
-    public Date date;
+    private Date date;
     public Map<String, String> languages = new TreeMap<>();
     public Map<String, String> languagesPreview = new TreeMap<>();
     public Map<String, String> languagesPreviewTextOnly = new TreeMap<>();
@@ -248,7 +248,7 @@ public class Fragment implements Comparable<Fragment> {
         if ("true".equals(localVisible)) {
             this.visible = true;
         }
-        order = Integer.parseInt((String) frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MIN_VALUE)));
+        order = Integer.parseInt((String) frontMatter.getOrDefault(Constants.ORDER_ID, Integer.toString(Integer.MAX_VALUE)));
 
         tags = (List)frontMatter.get(Constants.TAGS_ID);
         categories = (List)frontMatter.get(Constants.CATEGORIES_ID);
@@ -378,11 +378,35 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     /**
+     * Returns the date of this Fragment.
+     * @return The date of this Fragment.
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
      * Returns the name of the Fragments class this Fragment belongs to.
-     * @return The name of the Fragments class this Fragment belongs to
+     * @return The name of the Fragments class this Fragment belongs to.
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the order of the Fragment.
+     * @return The order of the Fragment.
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Returns the title of the Fragment in the current language.
+     * @return The title of the Fragment in the current language.
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**
@@ -399,6 +423,16 @@ public class Fragment implements Comparable<Fragment> {
      */
     public List<String> getCategories() {
         return categories;
+    }
+
+    /********** Setters ***********************************************************************************************/
+
+    /**
+     * Set the new order of this Fragment.
+     * @param order The new order of this Fragment.
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 
 }
