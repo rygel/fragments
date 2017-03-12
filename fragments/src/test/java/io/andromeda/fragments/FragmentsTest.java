@@ -6,6 +6,7 @@ import ro.pippo.core.Application;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,6 +47,20 @@ public class FragmentsTest {
         // Set of all keys of the visible categories
         Set<String> expectedCategoriesVisible = new HashSet<>(Arrays.asList("a_category_j", "b_category", "z_category"));
         assertThat(expectedCategoriesVisible, equalTo(fragments.getVisibleCategories().keySet()));
+    }
+
+    /** Test that the name is correctly passed from the Fragments class to the Fragment classes. */
+    @Test
+    public void testNameOfFragment() throws Exception {
+        String fragmentsName = "TEST__test";
+        String currentPath = System.getProperty("user.dir");
+        Configuration configuration = new Configuration(fragmentsName, "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/"));
+        Fragments fragments = new Fragments(new Application(), configuration);
+        assertThat(fragmentsName, equalTo(fragments.getName()));
+        List<Fragment> items = fragments.getFragments(true);
+        for (int i = 0; i < items.size(); i++) {
+            assertThat(items.get(i).name, equalTo(fragmentsName));
+        }
     }
 
 }

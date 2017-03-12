@@ -67,17 +67,24 @@ public class Fragments {
     private Map<String, List<Fragment>> allTags = new TreeMap<>();
     private Map<String, List<Fragment>> visibleTags = new TreeMap<>();
 
-    private Comparator<Fragment> byOrder = new Comparator<Fragment>() {
+    public Comparator<Fragment> byOrder = new Comparator<Fragment>() {
         @Override
         public int compare(Fragment left, Fragment right) {
             return left.order - right.order;
         }
     };
 
-    private Comparator<Fragment> byTitle = new Comparator<Fragment>() {
+    public Comparator<Fragment> byTitle = new Comparator<Fragment>() {
         @Override
         public int compare(Fragment left, Fragment right) {
             return left.title.compareToIgnoreCase(right.title);
+        }
+    };
+
+    public Comparator<Fragment> byDate = new Comparator<Fragment>() {
+        @Override
+        public int compare(Fragment left, Fragment right) {
+            return left.date.compareTo(right.date);
         }
     };
 

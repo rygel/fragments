@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -29,7 +30,7 @@ public class FragmentTest extends Assert {
     public ExpectedException thrown = ExpectedException.none();
 
 
-    @Test
+    @Test @SuppressWarnings("unchecked")
     public void testFragmentFileNotFound() throws Exception {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         final Appender mockAppender = mock(Appender.class);
@@ -59,29 +60,58 @@ public class FragmentTest extends Assert {
         System.out.print(tags.get(0));
     }
 
-    /*
-    @Test
+
+
+    @Test @SuppressWarnings("unchecked")
     public void testEmptyFragment() throws Exception {
-        thrown.expect(Exception.class);
-        thrown.expectMessage("File is empty: ");
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/lyricist/blog/empty_post.md", "/", "");
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        final Appender mockAppender = mock(Appender.class);
+        when(mockAppender.getName()).thenReturn("MOCK");
+        root.addAppender(mockAppender);
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/empty_post.md", "en", new Configuration("Test", "/", Paths.get("")));
+
+        verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
+            @Override
+            public boolean matches(final Object argument) {
+                return ((LoggingEvent)argument).getFormattedMessage().contains("File is empty: ");
+            }
+        }));
     }
 
-    @Test
+
+    @Test @SuppressWarnings("unchecked")
     public void testNoFrontMatter() throws Exception {
-        thrown.expect(Exception.class);
-        thrown.expectMessage("YAML/JSON Front Matter is missing in file: ");
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/lyricist/blog/no_front_matter.md", "/", "");
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        final Appender mockAppender = mock(Appender.class);
+        when(mockAppender.getName()).thenReturn("MOCK");
+        root.addAppender(mockAppender);
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_front_matter.md", "en", new Configuration("Test", "/", Paths.get("")));
+
+        verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
+            @Override
+            public boolean matches(final Object argument) {
+                return ((LoggingEvent)argument).getFormattedMessage().contains("YAML/JSON Front Matter is missing in file: ");
+            }
+        }));
     }
+
 
     @Test
     public void testNoFrontMatterSlug() throws Exception {
         String expected = "no_slug";
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/lyricist/blog/static_files/no_slug.md", "/", "");
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_slug.md", "en", new Configuration("Test", "/", Paths.get("")));
         String result = staticPage.slug;
-        assertThat(expected, equalTo(result));
+        assertThat(result, equalTo(expected));
     }
-    */
+
+    @Test
+    public void testPreviewTextOnly() throws Exception {
+        String expected = "No HTML Tags";
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/preview_text_only.md", "en", new Configuration("Test", "/", Paths.get("")));
+        String result = staticPage.preview_text_only;
+        assertThat(result, equalTo(expected));
+    }
+
 
     /*@Test
     public void testFragmentDateIsShort() throws Exception {

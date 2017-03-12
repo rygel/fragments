@@ -7,6 +7,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 #### Changed
+
+#### Added
+- Added name property to fragment.
+- Added preview_text_only to fragment.
+
+#### Removed
+
+### [0.0.16] - 2017-03-
+
+#### Fixed
+
+#### Changed
 - Configured SnakeYAML to not implicitly convert the data types. This allows for the same behavior for YAML and JSON front matter.
 
 #### Added

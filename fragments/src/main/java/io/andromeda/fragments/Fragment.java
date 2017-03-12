@@ -24,6 +24,9 @@ import com.vladsch.flexmark.parser.Parser;
 import io.andromeda.fragments.types.FrontMatterType;
 import io.andromeda.fragments.types.RouteType;
 import org.apache.commons.io.FilenameUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.DumperOptions;
@@ -71,6 +74,7 @@ public class Fragment implements Comparable<Fragment> {
     private Path path;
     public boolean visible = false;
     public String template;
+    public String name;
     public String title;
     public String slug;
     public String url;
@@ -78,12 +82,14 @@ public class Fragment implements Comparable<Fragment> {
     public String full_url_encoded;
     public String content;
     public String preview;
+    public String preview_text_only;
     public int order;
     public String defaultLanguage;
     public ZonedDateTime dateTime;
     public Date date;
     public Map<String, String> languages = new TreeMap<>();
     public Map<String, String> languagesPreview = new TreeMap<>();
+    public Map<String, String> languagesPreviewTextOnly = new TreeMap<>();
     public Map<String, String> languagesTitles = new TreeMap<>();
     private List<String> categories = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
@@ -101,6 +107,7 @@ public class Fragment implements Comparable<Fragment> {
         this.template = configuration.getDefaultTemplate();
         this.url = configuration.getUrlPath();
         this.full_url = configuration.getUrlPath();
+        this.name = configuration.getName();
         this.defaultLanguage = defaultLanguage;
         try {
             boolean success = readFile();
@@ -108,7 +115,7 @@ public class Fragment implements Comparable<Fragment> {
                 LOGGER.info("Loaded: {}", filename);
             }
         } catch (Exception e) {
-            LOGGER.error("Error reading file ({}): {}", filename, e);
+            LOGGER.error("Error reading file ({}): {}", filename, e.toString());
         }
     }
 
@@ -276,12 +283,16 @@ public class Fragment implements Comparable<Fragment> {
         while (line != null) {
             if (line.matches("--- \\w{2} ---")) {
                 languages.put(currentLanguage, parseMarkdown(buffer.toString()));
-                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer.toString())));
+                String extractedPreview = parseMarkdown(extractPreview(buffer.toString()));
+                languagesPreview.put(currentLanguage, extractedPreview);
+                languagesPreviewTextOnly.put(currentLanguage, Jsoup.clean(extractedPreview, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(true)));
                 currentLanguage = line.substring(4, 6);
                 buffer = new StringBuilder();
             } else if (line.matches("--- \\w{2}-\\w{2} ---")) {
                 languages.put(currentLanguage, parseMarkdown(buffer.toString()));
-                languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer.toString())));
+                String extractedPreview = parseMarkdown(extractPreview(buffer.toString()));
+                languagesPreview.put(currentLanguage, extractedPreview);
+                languagesPreviewTextOnly.put(currentLanguage, Jsoup.clean(extractedPreview, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(true)));
                 currentLanguage = line.substring(4, 9);
                 buffer = new StringBuilder();
             } else {
@@ -293,7 +304,10 @@ public class Fragment implements Comparable<Fragment> {
             }
         }
         languages.put(currentLanguage, parseMarkdown(buffer.toString()));
-        languagesPreview.put(currentLanguage, parseMarkdown(extractPreview(buffer.toString())));
+        String extractedPreview = parseMarkdown(extractPreview(buffer.toString()));
+        languagesPreview.put(currentLanguage, extractedPreview);
+        languagesPreviewTextOnly.put(currentLanguage, Jsoup.clean(extractedPreview, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(true)));
+        update(defaultLanguage);
     }
 
     protected String parseMarkdown(final String content) {
@@ -316,12 +330,15 @@ public class Fragment implements Comparable<Fragment> {
         }
         content = languages.get(localLanguage);
         preview = languagesPreview.get(localLanguage);
+        preview_text_only = languagesPreviewTextOnly.get(localLanguage);
         if (content == null) {
             content = languages.get(defaultLanguage);
             preview = languagesPreview.get(defaultLanguage);
+            preview_text_only = languagesPreviewTextOnly.get(defaultLanguage);
             if (content == null) {
                 content = "No content defined for this language: " + defaultLanguage;
                 preview = "No content defined for this language: " + defaultLanguage;
+                preview_text_only = "No content defined for this language: " + defaultLanguage;
             }
         }
     }
