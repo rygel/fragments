@@ -132,7 +132,6 @@ public class Fragment implements Comparable<Fragment> {
                 localUrl = localPath.toUri().toURL();
             } else {
                 LOGGER.error("Cannot load file \"{}\"!", filename);
-                //throw new Exception(filename + " (The system cannot find the file specified)");
                 return false;
             }
         }
@@ -336,9 +335,10 @@ public class Fragment implements Comparable<Fragment> {
             preview = languagesPreview.get(defaultLanguage);
             preview_text_only = languagesPreviewTextOnly.get(defaultLanguage);
             if (content == null) {
-                content = "No content defined for this language: " + defaultLanguage;
-                preview = "No content defined for this language: " + defaultLanguage;
-                preview_text_only = "No content defined for this language: " + defaultLanguage;
+                String text = "No content defined for this language: " + defaultLanguage;
+                content = text;
+                preview = text;
+                preview_text_only = text;
             }
         }
     }
