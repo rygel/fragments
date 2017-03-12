@@ -9,6 +9,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
 
 #### Added
+
+#### Removed
+
+### [0.0.18]2017-03-12
+
+#### Fixed
+
+#### Changed
+
+#### Added
 - Added name property to fragment.
 - Added preview_text_only to fragment.
 

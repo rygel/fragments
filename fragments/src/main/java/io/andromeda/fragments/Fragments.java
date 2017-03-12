@@ -67,21 +67,23 @@ public class Fragments {
     private Map<String, List<Fragment>> allTags = new TreeMap<>();
     private Map<String, List<Fragment>> visibleTags = new TreeMap<>();
 
-    public Comparator<Fragment> byOrder = new Comparator<Fragment>() {
+    public static final Comparator<Fragment> byOrder = new Comparator<Fragment>() {
         @Override
         public int compare(Fragment left, Fragment right) {
             return left.order - right.order;
         }
     };
 
-    public Comparator<Fragment> byTitle = new Comparator<Fragment>() {
+    //public static final  Comparator<Fragment> byOrder = Comparator.comparingInt(fragment -> fragment.order);
+
+    public static final Comparator<Fragment> byTitle = new Comparator<Fragment>() {
         @Override
         public int compare(Fragment left, Fragment right) {
             return left.title.compareToIgnoreCase(right.title);
         }
     };
 
-    public Comparator<Fragment> byDate = new Comparator<Fragment>() {
+    public static final Comparator<Fragment> byDate = new Comparator<Fragment>() {
         @Override
         public int compare(Fragment left, Fragment right) {
             return left.date.compareTo(right.date);
@@ -159,7 +161,6 @@ public class Fragments {
         } else {
             return visibleFragments;
         }
-        //return fragments.stream().filter(p -> p.isVisible);
     }
 
     private void readDirectory(String directory) {

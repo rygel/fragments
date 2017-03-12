@@ -74,7 +74,7 @@ public class Fragment implements Comparable<Fragment> {
     private Path path;
     public boolean visible = false;
     public String template;
-    public String name;
+    private String name;
     public String title;
     public String slug;
     public String url;
@@ -119,10 +119,6 @@ public class Fragment implements Comparable<Fragment> {
         }
     }
 
-    public String getDirectory() {
-        return path.normalize().toAbsolutePath().toFile().getParent();
-    }
-
     protected final boolean readFile() throws Exception {
         // First try the classpath
         URL localUrl = locateOnClasspath(filename);
@@ -136,54 +132,57 @@ public class Fragment implements Comparable<Fragment> {
             }
         }
         path = Paths.get(localUrl.toURI());
-        BufferedReader br = new BufferedReader(new FileReader(localUrl.getFile()));
-        final String delimiter;
+        try (BufferedReader br = new BufferedReader(new FileReader(localUrl.getFile()))) {
+            final String delimiter;
 
-        // detect YAML front matter
-        String line = br.readLine();
-        if (line == null) {
-            LOGGER.warn("File \"{}\" is empty.", filename);
-            throw new Exception("File is empty: " + path.normalize().toAbsolutePath().toString());
-        }
-        while (line.isEmpty()) {
-            line = br.readLine();
-        }
-        if (!line.matches("[-]{3,}")) { // use at least three dashes or opening curly braces
-            if (!line.matches("[{]{3,}")) {
-                throw new IllegalArgumentException("YAML/JSON Front Matter is missing in file: " + path.normalize().toString());
-            } else {
-                frontMatterType = FrontMatterType.JSON;
-                delimiter = "}}}";
+            // detect YAML front matter
+            String line = br.readLine();
+            if (line == null) {
+                LOGGER.warn("File \"{}\" is empty.", filename);
+                throw new Exception("File is empty: " + path.normalize().toAbsolutePath().toString());
             }
-        } else {
-            frontMatterType = FrontMatterType.YAML;
-            delimiter = line;
-        }
+            while (line.isEmpty()) {
+                line = br.readLine();
+            }
+            if (!line.matches("[-]{3,}")) { // use at least three dashes or opening curly braces
+                if (!line.matches("[{]{3,}")) {
+                    throw new IllegalArgumentException("YAML/JSON Front Matter is missing in file: " + path.normalize().toString());
+                } else {
+                    frontMatterType = FrontMatterType.JSON;
+                    delimiter = "}}}";
+                }
+            } else {
+                frontMatterType = FrontMatterType.YAML;
+                delimiter = line;
+            }
 
-        // scan front matter
-        StringBuilder sb = new StringBuilder();
-        if (frontMatterType == FrontMatterType.JSON) {
-            sb.append("{");
-        }
-        line = br.readLine();
-        while (!line.equals(delimiter)) {
-            sb.append(line);
-            sb.append("\n");
+            // scan front matter
+            StringBuilder sb = new StringBuilder();
+            if (frontMatterType == FrontMatterType.JSON) {
+                sb.append("{");
+            }
             line = br.readLine();
-        }
-        if (frontMatterType == FrontMatterType.JSON) {
-            sb.append("}");
-        }
+            while (!line.equals(delimiter)) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            if (frontMatterType == FrontMatterType.JSON) {
+                sb.append("}");
+            }
 
-        // readFile data
-        if (frontMatterType == FrontMatterType.YAML) {
-            parseYamlFrontMatter(sb.toString());
-        } else {
-            parseJsonFrontMatter(sb.toString());
-        }
+            // readFile data
+            if (frontMatterType == FrontMatterType.YAML) {
+                parseYamlFrontMatter(sb.toString());
+            } else {
+                parseJsonFrontMatter(sb.toString());
+            }
 
-        interpretFrontMatterGeneral();
-        parseContent(br);
+            interpretFrontMatterGeneral();
+            parseContent(br);
+        } catch (IOException e) {
+            LOGGER.error("Error: ", e);
+        }
         return true;
     }
 
@@ -213,7 +212,6 @@ public class Fragment implements Comparable<Fragment> {
         }
         if (configuration.getRouteType() == RouteType.ARTICLES) {
             url = url + slug;
-            //full_url = full_url + slug;
         } else {
             //Do the date handling
             String localDate = (String) frontMatter.get(Constants.DATE_ID);
@@ -367,6 +365,24 @@ public class Fragment implements Comparable<Fragment> {
     @Override
     public int compareTo(Fragment other) {
         return this.order - other.order;
+    }
+
+    /********** Getters ***********************************************************************************************/
+
+    /**
+     * Returns the directory in which the file is located.
+     * @return The directory in which the file is located.
+     */
+    public String getDirectory() {
+        return path.normalize().toAbsolutePath().toFile().getParent();
+    }
+
+    /**
+     * Returns the name of the Fragments class this Fragment belongs to.
+     * @return The name of the Fragments class this Fragment belongs to
+     */
+    public String getName() {
+        return name;
     }
 
     /**

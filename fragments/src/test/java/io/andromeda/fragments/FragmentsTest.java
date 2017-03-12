@@ -59,7 +59,7 @@ public class FragmentsTest {
         assertThat(fragmentsName, equalTo(fragments.getName()));
         List<Fragment> items = fragments.getFragments(true);
         for (int i = 0; i < items.size(); i++) {
-            assertThat(items.get(i).name, equalTo(fragmentsName));
+            assertThat(items.get(i).getName(), equalTo(fragmentsName));
         }
     }
 
