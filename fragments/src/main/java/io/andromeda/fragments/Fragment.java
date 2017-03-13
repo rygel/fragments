@@ -210,32 +210,17 @@ public class Fragment implements Comparable<Fragment> {
             slug = Utilities.slugify(slug);
             frontMatter.put(Constants.SLUG_ID, slug);
         }
+        //Date handling
+        String localDate = (String) frontMatter.get(Constants.DATE_ID);
+        dateHandling(localDate);
         if (configuration.getRouteType() == RouteType.ARTICLES) {
             url = url + slug;
-        } else {
-            //Do the date handling
-            String localDate = (String) frontMatter.get(Constants.DATE_ID);
+        } else if (configuration.getRouteType() == RouteType.BLOG) {
             if (localDate == null) {
                 LOGGER.error("Date is not available for a fragment of type Blog!");
-            } else {
-                try {
-                    DateTimeFormatter formatter =
-                            new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd['T'HH:mm:ss.SSSz]")
-                                    .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                                    .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                                    .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                                    .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
-                                    .parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
-                                    .toFormatter();
-                    dateTime = ZonedDateTime.parse(localDate, formatter);
-                    this.date = Date.from(dateTime.toInstant());
-                } catch (DateTimeParseException e) {
-                    LOGGER.error(e.toString());
-                    dateTime = ZonedDateTime.now(ZoneId.of("UTC"));
-                }
-                url = url + "/" + dateTime.getYear() + "/" + String.format("%02d", dateTime.getMonthValue())
-                        + "/" + String.format("%02d", dateTime.getDayOfMonth()) + "/" + slug;
             }
+            url = url + "/" + dateTime.getYear() + "/" + String.format("%02d", dateTime.getMonthValue())
+                    + "/" + String.format("%02d", dateTime.getDayOfMonth()) + "/" + slug;
         }
 
         // Overwrite the default template, when a template is defined in the front matter
@@ -360,6 +345,27 @@ public class Fragment implements Comparable<Fragment> {
             return result.substring(0, result.indexOf("<!--more -->"));
         }
         return "";
+    }
+
+    private void dateHandling(String localDate) {
+        if (localDate != null) {
+            try {
+                DateTimeFormatter formatter =
+                        new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd['T'HH:mm:ss.SSSz]")
+                                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                                .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
+                                .parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
+                                .toFormatter();
+                dateTime = ZonedDateTime.parse(localDate, formatter);
+                this.date = Date.from(dateTime.toInstant());
+            } catch (DateTimeParseException e) {
+                LOGGER.error(e.toString());
+                dateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+            }
+    }
+
     }
 
     @Override

@@ -4,7 +4,9 @@ import org.junit.Test;
 import ro.pippo.core.Application;
 
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,6 +77,20 @@ public class FragmentsTest {
         assertThat(items.get(1).getTitle(), equalTo("A as Andromeda"));
         assertThat(items.get(2).getTitle(), equalTo("P as Pippo"));
         assertThat(items.get(3).getTitle(), equalTo("Z as the End"));
+    }
+
+    /** Test that the order is correctly overwritten manually. */
+    @Test
+    public void testFragmentsAll() throws Exception {
+        Date expectedDate = Date.from(Instant.parse("2017-01-02T00:00:00.000Z"));
+        String currentPath = System.getProperty("user.dir");
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"));
+        Fragments fragments = new Fragments(new Application(), configuration);
+        List<Fragment> items = fragments.getFragments(true);
+        Fragment fragment = items.get(0);
+        assertThat(fragment.getTitle(), equalTo("This is a Test"));
+        assertThat(fragment.slug, equalTo("this_is_test"));
+        assertThat(fragment.getDate(), equalTo(expectedDate));
     }
 
 }

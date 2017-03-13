@@ -9,6 +9,7 @@ A pages collection engine for the [Pippo](https://github.com/decebals/pippo) Jav
 
 The main features are:
 ----------------------
+
 - Markdown files with JSON or YAML Front Matter
 - Global or local (per file) template definitions
 - Global and local (per file) Context
@@ -18,10 +19,12 @@ The main features are:
 - Categories and Tags
 
 ### Todo
+
 - Expiring files
 - Save the access statistics of the Fragments into a DB
 
 ## Other Features
+
 - Supports obfuscation of email addresses via [flexmark-java](https://github.com/vsch/flexmark-java) (in the Markdown files) as well as directly via the default context.
 
 ## Use Cases
@@ -70,6 +73,7 @@ This is the first event using Fragments.
 | visible           | boolean | true                    | Defines if the fragment is visible or not. Default value in Java is false, which will automatically overwritten with true, if it is not defined in the front matter. For usability purposes it can be seen as defaulting to true. |
 
 ### Fragment preview marker
+
 - preview tag inside of front matter
 - ```<!--more-->``` tag inside the content. Can be written as either ```<!--more-->, <!-- more -->, <!-- more-->, <!--more -->```.
 
@@ -85,10 +89,12 @@ Is used to configure the following properties of a Fragment:
 | routeType             | RouteType | RouteType.ARTICLES | The route type of the Fragments object. Defaults to ARTICLES, but can be changed to Blog, which will include the date into the URL, e.g. /2017/01/14/slug. |
 
 ### Example websites
+
 - 
 
 
 ### Dependencies
+
 - [pippo-core](https://github.com/decebals/pippo) to be able to automatically generate the routes.
 - [flexmark-java](https://github.com/vsch/flexmark-java) as a markdown parser.
 - [SnakeYaml](https://bitbucket.org/asomov/snakeyaml) as a YAML (front matter) parser.
