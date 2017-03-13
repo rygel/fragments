@@ -1,0 +1,4 @@
+---
+title: A as Andromeda
+---
+
