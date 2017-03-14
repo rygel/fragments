@@ -217,7 +217,7 @@ public class Fragment implements Comparable<Fragment> {
             url = url + slug;
         } else if (configuration.getRouteType() == RouteType.BLOG) {
             if (localDate == null) {
-                LOGGER.error("Date is not available for a fragment of type Blog!");
+                LOGGER.error("Date is not available for a fragment of type Blog: {}", filename);
             }
             url = url + "/" + dateTime.getYear() + "/" + String.format("%02d", dateTime.getMonthValue())
                     + "/" + String.format("%02d", dateTime.getDayOfMonth()) + "/" + slug;

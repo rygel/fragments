@@ -1,6 +1,11 @@
 package io.andromeda.fragments;
 
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
+import io.andromeda.fragments.types.RouteType;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 
 import java.nio.file.Paths;
@@ -14,6 +19,10 @@ import java.util.Set;
 import static io.andromeda.fragments.Fragments.byOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Alexander on 11.01.2017.
@@ -93,12 +102,12 @@ public class FragmentsTest {
         assertThat(fragment.getDate(), equalTo(expectedDate));
         assertThat(fragment.getOrder(), equalTo(-100));
         assertThat(fragment.getVisible(), equalTo(false));
+        assertThat(fragment.preview.trim(), equalTo("<p>Manual preview</p>"));
     }
 
     /** Test all variants of the more tag. */
     @Test
     public void testFragmentsMoreTags() throws Exception {
-
         String currentPath = System.getProperty("user.dir");
         Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/more_tags/"));
         Fragments fragments = new Fragments(new Application(), configuration);
@@ -115,6 +124,27 @@ public class FragmentsTest {
         Fragment fragment_04 = items.get(3);
         assertThat(fragment_04.preview.trim(), equalTo("<p>This is a preview 04!</p>"));
         assertThat(fragment_04.preview_text_only, equalTo("This is a preview 04!"));
+    }
+
+    /** Test RouteType.BLOG. */
+    @Test
+    public void testFragmentsRouteTypeBlog() throws Exception {
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        final Appender mockAppender = mock(Appender.class);
+        when(mockAppender.getName()).thenReturn("MOCK");
+        root.addAppender(mockAppender);
+        String currentPath = System.getProperty("user.dir");
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/blog/"));
+        configuration.setRouteType(RouteType.BLOG);
+        Fragments fragments = new Fragments(new Application(), configuration);
+        List<Fragment> items = fragments.getFragments(true);
+
+        verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
+            @Override
+            public boolean matches(final Object argument) {
+                return ((LoggingEvent)argument).getFormattedMessage().contains("Date is not available for a fragment of type Blog: ");
+            }
+        }));
     }
 
 }
