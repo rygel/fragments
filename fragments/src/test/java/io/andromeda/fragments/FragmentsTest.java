@@ -79,7 +79,7 @@ public class FragmentsTest {
         assertThat(items.get(3).getTitle(), equalTo("Z as the End"));
     }
 
-    /** Test that the order is correctly overwritten manually. */
+    /** Test all properties of a Fragment. */
     @Test
     public void testFragmentsAll() throws Exception {
         Date expectedDate = Date.from(Instant.parse("2017-01-02T00:00:00.000Z"));
@@ -91,6 +91,8 @@ public class FragmentsTest {
         assertThat(fragment.getTitle(), equalTo("This is a Test"));
         assertThat(fragment.slug, equalTo("this_is_test"));
         assertThat(fragment.getDate(), equalTo(expectedDate));
+        assertThat(fragment.getOrder(), equalTo(-100));
+        assertThat(fragment.visible, equalTo(false));
     }
 
 }
