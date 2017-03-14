@@ -28,13 +28,13 @@ public class YAMLResolver extends Resolver {
      */
     @Override
     protected void addImplicitResolvers() {
-        //addImplicitResolver(Tag.BOOL, BOOL, "yYnNtTfFoO");
-        // addImplicitResolver(Tags.FLOAT, FLOAT, "-+0123456789.");
-        //addImplicitResolver(Tag.INT, INT, "-+0123456789");
-        //addImplicitResolver(Tag.MERGE, MERGE, "<");
-        //addImplicitResolver(Tag.NULL, NULL, "~nN\0");
-        //addImplicitResolver(Tag.NULL, EMPTY, null);
-        // addImplicitResolver(Tags.TIMESTAMP, TIMESTAMP, "0123456789");
-        //addImplicitResolver(Tag.VALUE, VALUE, "=");
+        /**addImplicitResolver(Tag.BOOL, BOOL, "yYnNtTfFoO");
+           addImplicitResolver(Tags.FLOAT, FLOAT, "-+0123456789.");
+           addImplicitResolver(Tag.INT, INT, "-+0123456789");
+           addImplicitResolver(Tag.MERGE, MERGE, "<");
+           addImplicitResolver(Tag.NULL, NULL, "~nN\0");
+           addImplicitResolver(Tag.NULL, EMPTY, null);
+           addImplicitResolver(Tags.TIMESTAMP, TIMESTAMP, "0123456789");
+           addImplicitResolver(Tag.VALUE, VALUE, "="); */
     }
 }

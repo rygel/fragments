@@ -15,6 +15,8 @@
  */
 package io.andromeda.fragments;
 
+import net.sourceforge.cobertura.CoverageIgnore;
+
 /**
  * @author Alexander Brandt
  */
@@ -30,6 +32,7 @@ public class Constants {
     public static final String TAGS_ID = "tags";
     public static final String CATEGORIES_ID = "categories";
 
+    @CoverageIgnore
     private Constants() {
 
     }

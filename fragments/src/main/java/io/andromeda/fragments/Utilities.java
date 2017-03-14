@@ -15,6 +15,7 @@
  */
 package io.andromeda.fragments;
 
+import net.sourceforge.cobertura.CoverageIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class Utilities {
     /**
      * Protect the constructor.
      */
+    @CoverageIgnore
     private Utilities() {
 
     }
