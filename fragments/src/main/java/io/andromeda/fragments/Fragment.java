@@ -65,9 +65,9 @@ public class Fragment implements Comparable<Fragment> {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(Fragments.class);
 
-    public Map<String, Object> frontMatter = new TreeMap<>();
-    protected Map<String, Object> context = new TreeMap<>();
-    protected FrontMatterType frontMatterType;
+    private Map<String, Object> frontMatter = new TreeMap<>();
+    private Map<String, Object> context = new TreeMap<>();
+    private FrontMatterType frontMatterType;
 
     private Configuration configuration;
     private String filename;
@@ -77,20 +77,20 @@ public class Fragment implements Comparable<Fragment> {
     private String name;
     private String title;
     private String slug;
-    public String url;
-    public String full_url;
-    public String full_url_encoded;
-    public String content;
-    public String preview;
-    public String preview_text_only;
+    private String url;
+    private String fullUrl;
+    private String fullUrlEncoded;
+    private String content;
+    private String preview;
+    private String previewTextOnly;
     private int order;
-    public String defaultLanguage;
-    public ZonedDateTime dateTime;
+    private String defaultLanguage;
+    private ZonedDateTime dateTime;
     private Date date;
-    public Map<String, String> languages = new TreeMap<>();
-    public Map<String, String> languagesPreview = new TreeMap<>();
-    public Map<String, String> languagesPreviewTextOnly = new TreeMap<>();
-    public Map<String, String> languagesTitles = new TreeMap<>();
+    private Map<String, String> languages = new TreeMap<>();
+    private Map<String, String> languagesPreview = new TreeMap<>();
+    private Map<String, String> languagesPreviewTextOnly = new TreeMap<>();
+    private Map<String, String> languagesTitles = new TreeMap<>();
     private List<String> categories = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
 
@@ -106,7 +106,7 @@ public class Fragment implements Comparable<Fragment> {
         this.filename = filename;
         this.template = configuration.getDefaultTemplate();
         this.url = configuration.getUrlPath();
-        this.full_url = configuration.getUrlPath();
+        this.fullUrl = configuration.getUrlPath();
         this.name = configuration.getName();
         this.defaultLanguage = defaultLanguage;
         try {
@@ -312,16 +312,16 @@ public class Fragment implements Comparable<Fragment> {
         }
         content = languages.get(localLanguage);
         preview = languagesPreview.get(localLanguage);
-        preview_text_only = languagesPreviewTextOnly.get(localLanguage);
+        previewTextOnly = languagesPreviewTextOnly.get(localLanguage);
         if (content == null) {
             content = languages.get(defaultLanguage);
             preview = languagesPreview.get(defaultLanguage);
-            preview_text_only = languagesPreviewTextOnly.get(defaultLanguage);
+            previewTextOnly = languagesPreviewTextOnly.get(defaultLanguage);
             if (content == null) {
                 String text = "No content defined for this language: " + defaultLanguage;
                 content = text;
                 preview = text;
-                preview_text_only = text;
+                previewTextOnly = text;
             }
         }
     }
@@ -376,11 +376,27 @@ public class Fragment implements Comparable<Fragment> {
     /********** Getters ***********************************************************************************************/
 
     /**
+     * Returns the context of the Fragment.
+     * @return The context of the Fragment.
+     */
+    public Map<String, Object> getContext() {
+        return context;
+    }
+
+    /**
      * Returns the directory in which the file is located.
      * @return The directory in which the file is located.
      */
     public String getDirectory() {
         return path.normalize().toAbsolutePath().toFile().getParent();
+    }
+
+    /**
+     * Returns the content of this Fragment.
+     * @return The content of this Fragment.
+     */
+    public String getContent() {
+        return content;
     }
 
     /**
@@ -392,11 +408,91 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     /**
+     * Returns the ZonedDateTime of this Fragment.
+     * @return The ZonedDateTime of this Fragment.
+     */
+    public ZonedDateTime getDateTime() {
+        return dateTime;
+    }
+
+    /**
+     * Returns the default Language of the Fragment.
+     * @return The default Language of the Fragment.
+     */
+    public String getDefaultLanguage() {
+        return defaultLanguage;
+    }
+
+    /**
      * Returns the filename of the Fragment.
      * @return The filename of the Fragment.
      */
     public String getFilename() {
         return filename;
+    }
+
+    /**
+     * Returns the front matter of the Fragment.
+     * @return The front matter of the Fragment.
+     */
+    public Map<String, Object> getFrontMatter() {
+        return frontMatter;
+    }
+
+    /**
+     * Returns the FrontMatterType of the Fragment.
+     * @return The FrontMatterType of the Fragment.
+     */
+    public FrontMatterType getFrontMatterType() {
+        return frontMatterType;
+    }
+
+    /**
+     * Returns the full URL of the Fragment.
+     * @return The full URL of the Fragment.
+     */
+    public String getFullUrl() {
+        return fullUrl;
+    }
+
+    /**
+     * Returns the encoded full URL of the Fragment.
+     * @return The encoded full URL of the Fragment.
+     */
+    public String getFullUrlEncoded() {
+        return fullUrlEncoded;
+    }
+
+    /**
+     * Returns the languages of the Fragment.
+     * @return The languages of the Fragment.
+     */
+    public Map<String, String> getLanguages() {
+        return languages;
+    }
+
+    /**
+     * Returns the languages preview of the Fragment.
+     * @return The languages preview of the Fragment.
+     */
+    public Map<String, String> getLanguagesPreview() {
+        return languagesPreview;
+    }
+
+    /**
+     * Returns the languages preview (text only, no HTML markup) of the Fragment.
+     * @return The languages preview (text only, no HTML markup) of the Fragment.
+     */
+    public Map<String, String> getLanguagesPreviewTextOnly() {
+        return languagesPreviewTextOnly;
+    }
+
+    /**
+     * Returns the languages titles of the Fragment.
+     * @return The languages titles of the Fragment.
+     */
+    public Map<String, String> getLanguagesTitles() {
+        return languagesTitles;
     }
 
     /**
@@ -413,6 +509,22 @@ public class Fragment implements Comparable<Fragment> {
      */
     public int getOrder() {
         return order;
+    }
+
+    /**
+     * Returns the preview of the Fragment.
+     * @return The preview of the Fragment.
+     */
+    public String getPreview() {
+        return preview;
+    }
+
+    /**
+     * Returns the preview (text only, no HTML markup) of the Fragment.
+     * @return The preview (text only, no HTML markup) of the Fragment.
+     */
+    public String getPreviewTextOnly() {
+        return previewTextOnly;
     }
 
     /**
@@ -440,6 +552,14 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     /**
+     * Returns the url of the Fragment.
+     * @return The url of the Fragment.
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
      * Returns the visibility of the Fragment.
      * @return The visibility of the Fragment.
      */
@@ -464,6 +584,36 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     /********** Setters ***********************************************************************************************/
+
+    /**
+     * Set the context of the Fragment.
+     * @param context The new context of this Fragment.
+     * @param replaceExisting When true, the whole context Map will be replaced, otherwise the new context will be
+     *                        added to the existing context.
+     */
+    public void setContext(Map<String, Object> context, boolean replaceExisting) {
+        if (replaceExisting) {
+            this.context = context;
+        } else {
+            this.context.putAll(context);
+        }
+    }
+
+    /**
+     * Set the full URL of the Fragment.
+     * @param fullUrl The new full URL of this Fragment.
+     */
+    public void setFullUrl(String fullUrl) {
+        this.fullUrl = fullUrl;
+    }
+
+    /**
+     * Set the encoded full URL of the Fragment.
+     * @param fullUrlEncoded The new encoded full URL of this Fragment.
+     */
+    public void setFullUrlEncoded(String fullUrlEncoded) {
+        this.fullUrlEncoded = fullUrlEncoded;
+    }
 
     /**
      * Set the new order of this Fragment.

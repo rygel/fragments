@@ -55,7 +55,7 @@ public class FragmentTest extends Assert {
         root.addAppender(mockAppender);
 
         Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/categories_and_tags_json.md", "en", new Configuration("Test", "/", Paths.get("")));
-        List tags = (List)fragment.frontMatter.get("tags");
+        List tags = (List)fragment.getFrontMatter().get("tags");
         int size = tags.size();
         System.out.print(tags.get(0));
     }
@@ -108,7 +108,7 @@ public class FragmentTest extends Assert {
     public void testPreviewTextOnly() throws Exception {
         String expected = "No HTML Tags";
         Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/preview_text_only.md", "en", new Configuration("Test", "/", Paths.get("")));
-        String result = staticPage.preview_text_only;
+        String result = staticPage.getPreviewTextOnly();
         assertThat(result, equalTo(expected));
     }
 

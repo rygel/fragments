@@ -177,14 +177,13 @@ public class Fragments {
 
     public void registerFragments() {
         for (final Fragment fragment : visibleFragments) {
-            application.GET(fragment.url, new RouteHandler() {
+            application.GET(fragment.getUrl(), new RouteHandler() {
                 @Override
                 public void handle(RouteContext routeContext) {
-                    //fragment.full_url = urlPath + fragment.frontMatter.get(Constants.SLUG_ID);
                     final Map<String, Object> context = new TreeMap<>(defaultContext);
                     String lang = routeContext.getParameter("lang").toString();
                     fragment.update(lang);
-                    context.putAll(fragment.context);
+                    fragment.setContext(context, false);
                     context.put(Constants.FRAGMENT_ID, fragment);
                     context.put("overview_url", urlPath);
                     context.put("fragments", getVisibleFragmentOrdered(byOrder));
@@ -230,12 +229,12 @@ public class Fragments {
         /* Make sure that the fragments are ordered by Title before changing/overwriting the order! */
         allFragments.sort(byOrderThenTitle);
         for (Fragment fragment: allFragments) {
-            fragment.full_url = configuration.getProtocol() + configuration.getDomain() + fragment.url;
+            fragment.setFullUrl(configuration.getProtocol() + configuration.getDomain() + fragment.getUrl());
             //Create the URLEncoded  url
             try {
-                fragment.full_url_encoded = URLEncoder.encode(fragment.full_url, "UTF-8");
+                fragment.setFullUrlEncoded(URLEncoder.encode(fragment.getFullUrl(), "UTF-8"));
             } catch (UnsupportedEncodingException e) {
-                LOGGER.error("Error: Cannot convert URL: {}! {}", fragment.url, e);
+                LOGGER.error("Error: Cannot convert URL: {}! {}", fragment.getUrl(), e);
             }
 
             if (fragment.getOrder() == Integer.MAX_VALUE) {

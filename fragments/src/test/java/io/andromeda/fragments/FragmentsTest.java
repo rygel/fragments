@@ -102,7 +102,7 @@ public class FragmentsTest {
         assertThat(fragment.getDate(), equalTo(expectedDate));
         assertThat(fragment.getOrder(), equalTo(-100));
         assertThat(fragment.getVisible(), equalTo(false));
-        assertThat(fragment.preview.trim(), equalTo("<p>Manual preview</p>"));
+        assertThat(fragment.getPreview().trim(), equalTo("<p>Manual preview</p>"));
     }
 
     /** Test all variants of the more tag. */
@@ -113,17 +113,17 @@ public class FragmentsTest {
         Fragments fragments = new Fragments(new Application(), configuration);
         List<Fragment> items = fragments.getFragments(true);
         Fragment fragment_01 = items.get(0);
-        assertThat(fragment_01.preview.trim(), equalTo("<p>This is a preview 01!</p>"));
-        assertThat(fragment_01.preview_text_only, equalTo("This is a preview 01!"));
+        assertThat(fragment_01.getPreview().trim(), equalTo("<p>This is a preview 01!</p>"));
+        assertThat(fragment_01.getPreviewTextOnly(), equalTo("This is a preview 01!"));
         Fragment fragment_02 = items.get(1);
-        assertThat(fragment_02.preview.trim(), equalTo("<p>This is a preview 02!</p>"));
-        assertThat(fragment_02.preview_text_only, equalTo("This is a preview 02!"));
+        assertThat(fragment_02.getPreview().trim(), equalTo("<p>This is a preview 02!</p>"));
+        assertThat(fragment_02.getPreviewTextOnly(), equalTo("This is a preview 02!"));
         Fragment fragment_03 = items.get(2);
-        assertThat(fragment_03.preview.trim(), equalTo("<p>This is a preview 03!</p>"));
-        assertThat(fragment_03.preview_text_only, equalTo("This is a preview 03!"));
+        assertThat(fragment_03.getPreview().trim(), equalTo("<p>This is a preview 03!</p>"));
+        assertThat(fragment_03.getPreviewTextOnly(), equalTo("This is a preview 03!"));
         Fragment fragment_04 = items.get(3);
-        assertThat(fragment_04.preview.trim(), equalTo("<p>This is a preview 04!</p>"));
-        assertThat(fragment_04.preview_text_only, equalTo("This is a preview 04!"));
+        assertThat(fragment_04.getPreview().trim(), equalTo("<p>This is a preview 04!</p>"));
+        assertThat(fragment_04.getPreviewTextOnly(), equalTo("This is a preview 04!"));
     }
 
     /** Test RouteType.BLOG. */
