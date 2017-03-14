@@ -16,6 +16,7 @@
 package io.andromeda.fragments;
 
 import io.andromeda.fragments.types.RouteType;
+import net.sourceforge.cobertura.CoverageIgnore;
 
 import java.nio.file.Path;
 
@@ -40,6 +41,7 @@ public class Configuration {
     /**
      * Default Constructor.
      */
+    @CoverageIgnore
     private Configuration() {
 
     }
