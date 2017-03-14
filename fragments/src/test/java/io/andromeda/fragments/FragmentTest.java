@@ -100,7 +100,7 @@ public class FragmentTest extends Assert {
     public void testNoFrontMatterSlug() throws Exception {
         String expected = "no_slug";
         Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_slug.md", "en", new Configuration("Test", "/", Paths.get("")));
-        String result = staticPage.slug;
+        String result = staticPage.getSlug();
         assertThat(result, equalTo(expected));
     }
 

@@ -70,13 +70,13 @@ public class Fragment implements Comparable<Fragment> {
     protected FrontMatterType frontMatterType;
 
     private Configuration configuration;
-    public String filename;
+    private String filename;
     private Path path;
-    public boolean visible = false;
-    public String template;
+    private boolean visible = false;
+    private String template;
     private String name;
     private String title;
-    public String slug;
+    private String slug;
     public String url;
     public String full_url;
     public String full_url_encoded;
@@ -392,6 +392,14 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     /**
+     * Returns the filename of the Fragment.
+     * @return The filename of the Fragment.
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
      * Returns the name of the Fragments class this Fragment belongs to.
      * @return The name of the Fragments class this Fragment belongs to.
      */
@@ -408,11 +416,35 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     /**
+     * Returns the slug of the Fragment.
+     * @return The slug of the Fragment.
+     */
+    public String getSlug() {
+        return slug;
+    }
+
+    /**
+     * Returns the template of the Fragment.
+     * @return The template of the Fragment.
+     */
+    public String getTemplate() {
+        return template;
+    }
+
+    /**
      * Returns the title of the Fragment in the current language.
      * @return The title of the Fragment in the current language.
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * Returns the visibility of the Fragment.
+     * @return The visibility of the Fragment.
+     */
+    public boolean getVisible() {
+        return visible;
     }
 
     /**

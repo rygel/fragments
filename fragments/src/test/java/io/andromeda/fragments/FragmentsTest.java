@@ -89,10 +89,32 @@ public class FragmentsTest {
         List<Fragment> items = fragments.getFragments(true);
         Fragment fragment = items.get(0);
         assertThat(fragment.getTitle(), equalTo("This is a Test"));
-        assertThat(fragment.slug, equalTo("this_is_test"));
+        assertThat(fragment.getSlug(), equalTo("this_is_test"));
         assertThat(fragment.getDate(), equalTo(expectedDate));
         assertThat(fragment.getOrder(), equalTo(-100));
-        assertThat(fragment.visible, equalTo(false));
+        assertThat(fragment.getVisible(), equalTo(false));
+    }
+
+    /** Test all variants of the more tag. */
+    @Test
+    public void testFragmentsMoreTags() throws Exception {
+
+        String currentPath = System.getProperty("user.dir");
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/more_tags/"));
+        Fragments fragments = new Fragments(new Application(), configuration);
+        List<Fragment> items = fragments.getFragments(true);
+        Fragment fragment_01 = items.get(0);
+        assertThat(fragment_01.preview.trim(), equalTo("<p>This is a preview 01!</p>"));
+        assertThat(fragment_01.preview_text_only, equalTo("This is a preview 01!"));
+        Fragment fragment_02 = items.get(1);
+        assertThat(fragment_02.preview.trim(), equalTo("<p>This is a preview 02!</p>"));
+        assertThat(fragment_02.preview_text_only, equalTo("This is a preview 02!"));
+        Fragment fragment_03 = items.get(2);
+        assertThat(fragment_03.preview.trim(), equalTo("<p>This is a preview 03!</p>"));
+        assertThat(fragment_03.preview_text_only, equalTo("This is a preview 03!"));
+        Fragment fragment_04 = items.get(3);
+        assertThat(fragment_04.preview.trim(), equalTo("<p>This is a preview 04!</p>"));
+        assertThat(fragment_04.preview_text_only, equalTo("This is a preview 04!"));
     }
 
 }

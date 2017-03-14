@@ -89,12 +89,12 @@ public class DBSupport {
 
         try (Connection con = sql2o.open()) {
             Long clicks = con.createQuery(sql)
-                    .addParameter("name", fragment.filename)
+                    .addParameter("name", fragment.getFilename())
                     .executeScalar(Long.class);
 
 
             con.createQuery(sql)
-                    .addParameter("p_name", fragment.filename)
+                    .addParameter("p_name", fragment.getFilename())
                     .addParameter("p_clicks", ++clicks)
                     .executeUpdate()
                     .getKey();

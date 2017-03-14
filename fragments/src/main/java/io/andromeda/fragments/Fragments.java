@@ -160,7 +160,7 @@ public class Fragments {
                             defaultLanguage = languages.get(0);
                         }
                         Fragment fragment = new Fragment(path.normalize().toString(), defaultLanguage, configuration);
-                        if (fragment.visible) {
+                        if (fragment.getVisible()) {
                             visibleFragments.add(fragment);
                         }
                         allFragments.add(fragment);
@@ -196,7 +196,7 @@ public class Fragments {
                     }
                     context.put("lang", lang);
 
-                    routeContext.render(fragment.template, context);
+                    routeContext.render(fragment.getTemplate(), context);
                 }
             });
         }
@@ -270,7 +270,7 @@ public class Fragments {
                     allTaxonomies.put(taxName, current);
                 }
                 current.add(fragment);
-                if (fragment.visible) {
+                if (fragment.getVisible()) {
                     List<Fragment> currentVisible;
                     if (visibleTaxonomies.containsKey(taxName)) {
                         currentVisible = visibleTaxonomies.get(taxName);
