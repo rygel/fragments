@@ -19,6 +19,7 @@ import io.andromeda.fragments.types.RouteType;
 import net.sourceforge.cobertura.CoverageIgnore;
 
 import java.nio.file.Path;
+import java.util.Map;
 
 /**
  * Configuration object for Fragments class.
@@ -37,6 +38,7 @@ public class Configuration {
     private Path dataDirectory;
     private String overviewTemplate;
     private String defaultTemplate;
+    private DynamicContext dynamicContext;
 
     /**
      * Default Constructor.
@@ -157,6 +159,10 @@ public class Configuration {
         return defaultTemplate;
     }
 
+    public final Map<String, Object> getDynamicContext(Map<String, Object> previousContext) {
+        return dynamicContext.getContext(previousContext);
+    }
+
     /********** Setters ***********************************************************************************************/
 
     /**
@@ -198,6 +204,10 @@ public class Configuration {
      */
     public final void setRegisterOverviewRoute(boolean registerOverviewRoute) {
         this.registerOverviewRoute = registerOverviewRoute;
+    }
+
+    public final void setDynamicContext(DynamicContext dynamicContext) {
+        this.dynamicContext = dynamicContext;
     }
 
 }
