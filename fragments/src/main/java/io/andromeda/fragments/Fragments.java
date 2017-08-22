@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
 import ro.pippo.core.route.RouteContext;
-import ro.pippo.core.route.RouteGroup;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.ClasspathUtils;
 
@@ -34,8 +33,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -192,13 +189,8 @@ public class Fragments {
                     context.put("fragments", getVisibleFragmentOrdered(byOrder));
                     context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
                     context.put("all_fragments", allFragments);
+
                     context.putAll(configuration.getDynamicContext(context));
-                    /*ZonedDateTime todayDateTime = ZonedDateTime.now();
-                    ZonedDateTime tomorrowDateTime = todayDateTime.plusDays(1);
-                    ZonedDateTime dayAfterTomorrowDateTime = todayDateTime.plusDays(2);
-                    context.put("date_today", todayDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yy")));
-                    context.put("date_tomorrow", tomorrowDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yy")));
-                    context.put("date_dayaftertomorrow", dayAfterTomorrowDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yy")));*/
                     if (dbsupport != null) {
                         context.put("top_fragments", dbsupport.getTopFragments());
                         dbsupport.addClick(fragment);

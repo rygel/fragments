@@ -159,8 +159,17 @@ public class Configuration {
         return defaultTemplate;
     }
 
+    /**
+     * Returns the dynamic context to be used for the fragments.
+     * @return The dynamic context to be used for the fragments.
+     */
     public final Map<String, Object> getDynamicContext(Map<String, Object> previousContext) {
-        return dynamicContext.getContext(previousContext);
+        if (dynamicContext != null) {
+            return dynamicContext.getContext(previousContext);
+        } else {
+            return previousContext;
+        }
+
     }
 
     /********** Setters ***********************************************************************************************/
@@ -206,6 +215,10 @@ public class Configuration {
         this.registerOverviewRoute = registerOverviewRoute;
     }
 
+    /**
+     * Sets the dynamic context for this Fragments instance.
+     * @param dynamicContext A class implementing the DynamicContext interface.
+     */
     public final void setDynamicContext(DynamicContext dynamicContext) {
         this.dynamicContext = dynamicContext;
     }
