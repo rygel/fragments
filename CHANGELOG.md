@@ -12,6 +12,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
+### [0.0.20]2018-02-24
+
+#### Fixed
+
+#### Changed
+
+#### Added
+- Added dynamic context functionality
+
 ### [0.0.18]2017-03-12
 
 #### Fixed
