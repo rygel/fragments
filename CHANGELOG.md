@@ -2,11 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased][unreleased]
+### [0.0.21][unreleased]
 
 #### Fixed
 
 #### Changed
+- Updated flexmark to 0.32.12
+- Updated slf4j to 1.7.25
+- Added database support. Currently for embedded H2 database only.
 
 #### Added
 

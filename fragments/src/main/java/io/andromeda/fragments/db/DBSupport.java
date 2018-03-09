@@ -22,6 +22,7 @@ import io.andromeda.fragments.Fragments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql2o.Connection;
+import org.sql2o.Query;
 import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
@@ -54,7 +55,7 @@ public class DBSupport {
             LOGGER.error(e.toString());
         }
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDataSourceClassName(configuration.getDriver());
+        hikariConfig.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
         //hikariConfig.setDriverClassName("org.h2.Driver");
         hikariConfig.setUsername(configuration.getUsername());
         hikariConfig.setPassword(configuration.getPassword());
@@ -65,22 +66,37 @@ public class DBSupport {
         DataSource dataSource = new HikariDataSource(hikariConfig);
         sql2o = new Sql2o(dataSource);
 
+        if (configuration.getResetDB()) {
+            dropTable();
+        }
         return createTable();
     }
 
-
-    public boolean createTable() {
+    public boolean executeQuery(String queryString) {
         boolean result = true;
-        String createTable = String.format("CREATE TABLE %s(id int primary key, name varchar(1000), clicks bigint)", configuration.getDBName());
-        //String sql = "SELECT id FROM author WHERE p_username = ':p_username'";
 
         try (Connection con = sql2o.open()) {
-            con.createQuery(createTable).executeUpdate().commit();
+            try(Query query = con.createQuery(queryString)) {
+                query.executeUpdate().commit();
+            } catch (Exception exception) {
+                LOGGER.error("Exception: {}", exception);
+                result = false;
+            }
         } catch (Exception exception) {
             LOGGER.error("Exception: {}", exception);
             result = false;
         }
         return result;
+    }
+
+    public boolean createTable() {
+        String createTable = String.format("CREATE TABLE IF NOT exists %s(id int primary key, name varchar(1000), clicks bigint)", configuration.getDBName());
+        return executeQuery(createTable);
+    }
+
+    public boolean dropTable() {
+        String dropTable = String.format("DROP TABLE IF exists %s CASCADE;", configuration.getDBName());
+        return executeQuery(dropTable);
     }
 
     public void addClick(Fragment fragment) {
