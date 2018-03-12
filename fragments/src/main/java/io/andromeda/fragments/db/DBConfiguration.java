@@ -24,12 +24,13 @@ import java.nio.file.Paths;
  * @author Alexander Brandt
  */
 public class DBConfiguration {
-    private final String driver = "org.h2.jdbcx.JdbcDataSource";
-    //private final String driver = "org.h2.Driver";
-    private String connection = "jdbc:h2:./data/fragments/h2/";
+    //private final String driver = "org.h2.jdbcx.JdbcDataSource";
+    private final String driver = "org.h2.Driver";
+    private String connection = "jdbc:h2:";
     private final String username = "fragments";
     private final String password = "1234";
     private final String name;
+    private boolean resetDB = false;
 
     public DBConfiguration(Fragments fragments) {
         String nameTemplate = "fragments_clicks_";
@@ -47,7 +48,7 @@ public class DBConfiguration {
     }
 
     public String getConnection() {
-        return driver;
+        return connection;
     }
 
     public String getUsername() {
@@ -60,5 +61,13 @@ public class DBConfiguration {
 
     public String getDBName() {
         return name;
+    }
+
+    public boolean getResetDB() {
+        return resetDB;
+    }
+
+    public void setResetDB(boolean resetDB) {
+        this.resetDB = resetDB;
     }
 }
