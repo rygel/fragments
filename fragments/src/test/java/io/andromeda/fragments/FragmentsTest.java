@@ -32,7 +32,7 @@ public class FragmentsTest {
     @Test
     public void testLanguageFragments() throws Exception {
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("Test", "/", Paths.get(currentPath + "/src/test/resources/languages/item.md"));
+        Configuration configuration = new Configuration("Test", "/", Paths.get(currentPath + "/src/test/resources/languages/item.md"), "", "");
         Fragment fragment = new Fragment("test", "de", configuration);
         String result = Utilities.removeTrailingSlash("/");
         //assertThat(expected, equalTo(result));
@@ -42,7 +42,7 @@ public class FragmentsTest {
     public void testFragmentsTagsAndCategories() throws Exception {
         int expectedSizeAllTags = 4;
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("Test", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/"));
+        Configuration configuration = new Configuration("Test", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/"), "", "");
         Fragments fragments = new Fragments(new Application(), configuration);
         // Size of all tags
         int sizeAllTags = fragments.getAllTags().size();
@@ -66,7 +66,7 @@ public class FragmentsTest {
     public void testNameOfFragment() throws Exception {
         String fragmentsName = "TEST__test";
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration(fragmentsName, "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/"));
+        Configuration configuration = new Configuration(fragmentsName, "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/"), "", "");
         Fragments fragments = new Fragments(new Application(), configuration);
         assertThat(fragments.getName(), equalTo(fragmentsName));
         List<Fragment> items = fragments.getFragments(true);
@@ -79,7 +79,7 @@ public class FragmentsTest {
     @Test
     public void testFragmentsOrder() throws Exception {
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/order/"));
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/order/"), "", "");
         Fragments fragments = new Fragments(new Application(), configuration);
         List<Fragment> items = fragments.getVisibleFragmentOrdered(byOrder);
         assertThat(items.get(0).getTitle(), equalTo("Q as Q"));
@@ -93,7 +93,7 @@ public class FragmentsTest {
     public void testFragmentsAll() throws Exception {
         Date expectedDate = Date.from(Instant.parse("2017-01-02T00:00:00.000Z"));
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"));
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"), "", "");
         Fragments fragments = new Fragments(new Application(), configuration);
         List<Fragment> items = fragments.getFragments(true);
         Fragment fragment = items.get(0);
@@ -109,7 +109,7 @@ public class FragmentsTest {
     @Test
     public void testFragmentsMoreTags() throws Exception {
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/more_tags/"));
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/more_tags/"), "", "");
         Fragments fragments = new Fragments(new Application(), configuration);
         List<Fragment> items = fragments.getFragments(true);
         Fragment fragment_01 = items.get(0);
@@ -134,7 +134,7 @@ public class FragmentsTest {
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/blog/"));
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/blog/"), "", "");
         configuration.setRouteType(RouteType.BLOG);
         Fragments fragments = new Fragments(new Application(), configuration);
         List<Fragment> items = fragments.getFragments(true);

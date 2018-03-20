@@ -7,6 +7,8 @@ import ro.pippo.core.Application;
 
 import io.andromeda.fragments.Fragments;
 
+import java.nio.file.Paths;
+
 /**
  * A simple Pippo application.
  *
@@ -39,8 +41,10 @@ public class PippoApplication extends Application {
         });
 
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("events");
-        Fragments fragments = new Fragments(this, "/posts/", currentPath + "/data/posts", "posts_overview", "post", null, configuration);
+        Configuration rootConfiguration = new Configuration("Root", "/", Paths.get(currentPath + "/fragments-demo/data/fragments/root/"));
+        rootConfiguration.setRegisterOverviewRoute(false);
+
+        Fragments rootFragments = new Fragments(this, rootConfiguration);
     }
 
 }

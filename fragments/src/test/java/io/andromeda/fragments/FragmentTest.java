@@ -37,7 +37,7 @@ public class FragmentTest extends Assert {
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
 
-        Fragment fragment = new Fragment("file_not_found.md", "en", new Configuration("Test", "/", Paths.get("")));
+        Fragment fragment = new Fragment("file_not_found.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
 
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
@@ -54,7 +54,7 @@ public class FragmentTest extends Assert {
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
 
-        Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/categories_and_tags_json.md", "en", new Configuration("Test", "/", Paths.get("")));
+        Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/categories_and_tags_json.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
         List tags = (List)fragment.getFrontMatter().get("tags");
         int size = tags.size();
         System.out.print(tags.get(0));
@@ -68,7 +68,7 @@ public class FragmentTest extends Assert {
         final Appender mockAppender = mock(Appender.class);
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/empty_post.md", "en", new Configuration("Test", "/", Paths.get("")));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/empty_post.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
 
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
@@ -85,7 +85,7 @@ public class FragmentTest extends Assert {
         final Appender mockAppender = mock(Appender.class);
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_front_matter.md", "en", new Configuration("Test", "/", Paths.get("")));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_front_matter.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
 
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
@@ -99,7 +99,7 @@ public class FragmentTest extends Assert {
     @Test
     public void testNoFrontMatterSlug() throws Exception {
         String expected = "no_slug";
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_slug.md", "en", new Configuration("Test", "/", Paths.get("")));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_slug.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
         String result = staticPage.getSlug();
         assertThat(result, equalTo(expected));
     }
@@ -107,7 +107,7 @@ public class FragmentTest extends Assert {
     @Test
     public void testPreviewTextOnly() throws Exception {
         String expected = "No HTML Tags";
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/preview_text_only.md", "en", new Configuration("Test", "/", Paths.get("")));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/preview_text_only.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
         String result = staticPage.getPreviewTextOnly();
         assertThat(result, equalTo(expected));
     }

@@ -26,6 +26,7 @@ The main features are:
 ## Other Features
 
 - Supports obfuscation of email addresses via [flexmark-java](https://github.com/vsch/flexmark-java) (in the Markdown files) as well as directly via the default context.
+- Has a dynamic context, which is used to dynamically inject information during each call to a route.
 
 ## Use Cases
 I have often the case that I want to display collections of data with Pippo, e.g. a list of articles, a list of events, etc.
@@ -80,13 +81,19 @@ This is the first event using Fragments.
 ### Configuration class
 Is used to configure the following properties of a Fragment:
 
-| Property              | Type      | Default value      | Description                                                                                                                                                |
-|:----------------------|:----------|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| domain                | String    | ""                 | The domain of the website, e.g. example.com                                                                                                                |
-| extension             | String    | ".md"              | The extension of the markdown files.                                                                                                                       |
-| protocol              | String    | "https://"         | The protocol of the website. Used for constructing the fully encoded URL.                                                                                  |
-| registerOverviewRoute | boolean   | true               | When set to false the route for the baseURL will not be automatically be registered. This allows to create that route manually with total control.         |
-| routeType             | RouteType | RouteType.ARTICLES | The route type of the Fragments object. Defaults to ARTICLES, but can be changed to Blog, which will include the date into the URL, e.g. /2017/01/14/slug. |
+| Property              | Type           | Default value      | Description                                                                                                                                                |
+|:----------------------|:---------------|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| domain                | String         | ""                 | The domain of the website, e.g. example.com                                                                                                                |
+| dynamicContext        | DynamicContext | null               | Accepts a class implementing the DynamicContext interface. Is intented to be used to update the context during the execution of a program. Otherwise the context will be static over the runtime of the application. |
+| extension             | String         | ".md"              | The extension of the markdown files.                                                                                                                       |
+| protocol              | String         | "https://"         | The protocol of the website. Used for constructing the fully encoded URL.                                                                                  |
+| registerOverviewRoute | boolean        | true               | When set to false the route for the baseURL will not be automatically be registered. This allows to create that route manually with total control.         |
+| routeType             | RouteType      | RouteType.ARTICLES | The route type of the Fragments object. Defaults to ARTICLES, but can be changed to Blog, which will include the date into the URL, e.g. /2017/01/14/slug. |
+
+### Dynamic Context
+Rationale: Imagine you want to display the current date on the website. For this you have to include it in the context of the
+route which is displayed. For routes created by Fragments you have to define a DynamicContext and add it to the Configuration class.
+Then the Dynamic Context will always be executed once one of the routes of this fragment is requested.
 
 ### Example websites
 
