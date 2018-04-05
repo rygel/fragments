@@ -10,14 +10,14 @@
     <parent>
         <artifactId>fragments-parent</artifactId>
         <groupId>io.andromeda</groupId>
-        <version>0.0.21</version>
+        <version>0.0.22-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>io.andromeda</groupId>
             <artifactId>fragments</artifactId>
-            <version>0.0.21</version>
+            <version>0.0.22-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
