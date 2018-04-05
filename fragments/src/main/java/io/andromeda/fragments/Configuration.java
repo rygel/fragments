@@ -56,19 +56,6 @@ public class Configuration {
      *             unique name.
      * @param urlPath Path of the base URL. Used for the automatically created routes. Full path will be urlPath/slug.
      * @param dataDirectory Directory containing the Markdown files.
-     */
-    public Configuration(String name, String urlPath, Path dataDirectory){
-        this(name, urlPath, dataDirectory, "", "");
-    }
-
-    /**
-     * Creates a new Configuration instance. The three required parameters are the minimal necessary user-provided
-     * configuration items.
-     * @param name The name of this Fragments instance. It is used for identifying the instance and for creating the
-     *             filename of the database, when it is enabled. In a project each Fragments instance should have a
-     *             unique name.
-     * @param urlPath Path of the base URL. Used for the automatically created routes. Full path will be urlPath/slug.
-     * @param dataDirectory Directory containing the Markdown files.
      * @param overviewTemplate Template to be used for the overview page, e.g urlPath.
      * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside
      *                        the front matter.

@@ -21,8 +21,11 @@ import net.sourceforge.cobertura.CoverageIgnore;
  * @author Alexander Brandt
  */
 public class Constants {
+    public static final String CONTENT_ID = "content";
     public static final String VISIBLE_ID = "visible";
     public static final String SLUG_ID = "slug";
+    public static final String FULL_URL_ID = "full_url";
+    public static final String FULL_URL_ENCODED_ID = "full_url_encoded";
     public static final String TEMPLATE_ID = "template";
     public static final String TITLE_ID = "title";
     public static final String FRAGMENT_ID = "fragment";

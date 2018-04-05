@@ -19,6 +19,7 @@
     <modules>
         <module>fragments</module>
         <module>fragments-demo</module>
+        <module>fragments-lucene</module>
     </modules>
 
     <properties>

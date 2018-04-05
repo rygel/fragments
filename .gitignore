@@ -46,3 +46,4 @@ fabric.propertie
 /.idea/sonarlint
 /.idea
 /fragments/src/test/resources/fragments/tests/*.db
+/fragments-lucene/target
