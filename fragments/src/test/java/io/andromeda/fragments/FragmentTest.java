@@ -2,6 +2,7 @@ package io.andromeda.fragments;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.andromeda.fragments.types.FrontMatterType;
 import io.andromeda.fragments.types.RouteType;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -11,7 +12,12 @@ import org.mockito.ArgumentMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -45,6 +51,36 @@ public class FragmentTest extends Assert {
                 return ((LoggingEvent)argument).getFormattedMessage().contains("Cannot load file \"file_not_found.md\"");
             }
         }));
+    }
+
+    @Test
+    public void testFragmentGeneral() {
+        Path directory = Paths.get(System.getProperty("user.dir"), "/src/test/resources/fragments/tests/blog/");
+        String expectedFilename = Paths.get(directory.toString(), "/blog_post_date_time.md").toString();
+        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "");
+        String expectedDefaultLanguage = "en";
+        Fragment staticPage = new Fragment(expectedFilename, expectedDefaultLanguage, configuration);
+        Path result = Paths.get(staticPage.getDirectory());
+        assertThat(result, equalTo(directory));
+        String expectedContent = "<p>Text<!--more-->The rest.</p>\n";
+        String content = staticPage.getContent();
+        assertThat(content, equalTo(expectedContent));
+        Date expectedDate = new Date(1484216100000L);
+        Date date = staticPage.getDate();
+        assertThat(date, equalTo(expectedDate));
+        ZonedDateTime expectedZonedDateTime = ZonedDateTime.of(2017, 01, 12, 10, 15, 00, 00, ZoneId.of("UTC"));
+        ZonedDateTime zonedDateTime = staticPage.getDateTime();
+        assertThat(zonedDateTime, equalTo(expectedZonedDateTime));
+        String defaultLanguage = staticPage.getDefaultLanguage();
+        assertThat(defaultLanguage, equalTo(expectedDefaultLanguage));
+        String filename2 = staticPage.getFilename();
+        assertThat(filename2, equalTo(expectedFilename));
+        FrontMatterType expectedFrontMatterType = FrontMatterType.YAML;
+        FrontMatterType frontMatterType = staticPage.getFrontMatterType();
+        assertThat(frontMatterType, equalTo(expectedFrontMatterType));
+        String expectedTemplate = "static";
+        String template = staticPage.getTemplate();
+        assertThat(template, equalTo(expectedTemplate));
     }
 
     @Test
