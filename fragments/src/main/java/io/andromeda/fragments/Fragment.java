@@ -40,12 +40,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -351,18 +353,16 @@ public class Fragment implements Comparable<Fragment> {
         if (localDate != null) {
             try {
                 DateTimeFormatter formatter =
-                        new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd['T'HH:mm:ss.SSSz]")
+                        new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd['T'HH:mm]")
                                 .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
                                 .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                                .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
-                                .parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
                                 .toFormatter();
-                dateTime = ZonedDateTime.parse(localDate, formatter);
+                LocalDateTime localDateTime = LocalDateTime.parse(localDate, formatter);
+                dateTime = ZonedDateTime.of(localDateTime, ZoneId.of("UTC"));
                 this.date = Date.from(dateTime.toInstant());
             } catch (DateTimeParseException e) {
                 LOGGER.error(e.toString());
-                dateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+                dateTime = ZonedDateTime.parse("1970-01-01T00:00:00Z", DateTimeFormatter.ISO_DATE_TIME);
             }
     }
 

@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### [0.0.22]
+
+#### Fixed
+
+#### Changed
+- Updated flexmark to 0.32.20.
+- Fixed date parsing for RouteType.Blog.
+
+#### Added
+
+#### Removed
+
 ### [0.0.21]2018-04-05
 
 #### Fixed

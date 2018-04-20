@@ -19,7 +19,9 @@ import net.sourceforge.cobertura.CoverageIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 /**
  * @author Alexander Brandt
@@ -29,6 +31,17 @@ public class Utilities {
     private static final Logger LOGGER = LoggerFactory.getLogger(Utilities.class);
 
     private static Random random = new Random(0x2626);
+
+    public static final String ACTIVE_ID = "active";
+    public static final String FIRST_ID = "first";
+    public static final String LAST_ID = "last";
+    public static final String NEXT_ID = "next";
+    public static final String PAGINATION_ID = "pagination";
+    public static final String PREVIOUS_ID = "previous";
+    public static final String TEXT_ID = "text";
+    public static final String URL_ID = "url";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
 
     /**
      * Protect the constructor.
@@ -91,5 +104,73 @@ public class Utilities {
       default: return null;
     }
   }
+
+    public static Map<String, Object> calculatePagination(int currentPage, int maxNoInPagination,  long totalHits) {
+        Map<String, Object> result = new TreeMap<>();
+
+        int currentPagination = maxNoInPagination;
+        int maxPagesFromHits = (int)Math.ceil(totalHits/10.);
+
+        if (maxNoInPagination > maxPagesFromHits) {
+            maxNoInPagination = maxPagesFromHits;
+        }
+        int fromPage = currentPage - (maxNoInPagination - 1)/2;
+        int toPage = currentPage + (maxNoInPagination - 1)/2;
+
+        int lowerDifference = 0 - fromPage + 1;
+
+        if (lowerDifference > 0) {
+            fromPage = 1;
+            toPage = toPage + lowerDifference;
+        }
+
+        while (toPage > maxPagesFromHits) {
+            toPage = toPage - 1;
+            fromPage = fromPage - 1;
+        }
+        LOGGER.debug("fromPage: {}, toPage: {}", fromPage, toPage);
+
+        if (maxPagesFromHits <= maxNoInPagination) {
+            currentPagination = maxPagesFromHits;
+            result.put(NEXT_ID, getItem(NEXT_ID, false, Integer.toString(currentPagination)));
+            result.put(LAST_ID, getItem(LAST_ID, false, Integer.toString(maxPagesFromHits)));
+        } else {
+            result.put(NEXT_ID, getItem(NEXT_ID, true, Integer.toString(currentPage + 1)));
+            result.put(LAST_ID, getItem(LAST_ID, true, Integer.toString(maxPagesFromHits)));
+        }
+
+        if (currentPage == 1) {
+            result.put(FIRST_ID, getItem(FIRST_ID, false, Integer.toString(1)));
+            result.put(PREVIOUS_ID, getItem(PREVIOUS_ID, false, Integer.toString(1)));
+        } else {
+            result.put(FIRST_ID, getItem(FIRST_ID, true, Integer.toString(1)));
+            result.put(PREVIOUS_ID, getItem(PREVIOUS_ID, true, Integer.toString(currentPage - 1)));
+        }
+
+        if (currentPage == maxPagesFromHits) {
+            result.put(NEXT_ID, getItem(NEXT_ID, false, Integer.toString(currentPage)));
+            result.put(LAST_ID, getItem(LAST_ID, false, Integer.toString(maxPagesFromHits)));
+        }
+
+        int counter = 0;
+        for(int i = fromPage; i < toPage + 1; i++) {
+            counter = counter + 1;
+            result.put(Integer.toString(counter), getItem(Integer.toString(i), true, Integer.toString(i)));
+        }
+
+        return result;
+    }
+
+    public static Map<String, Object> getItem(String text, boolean active, String url) {
+        Map<String, Object> result = new TreeMap<>();
+        result.put(TEXT_ID, text);
+        if (active) {
+            result.put(ACTIVE_ID, TRUE);
+        } else {
+            result.put(ACTIVE_ID, FALSE);
+        }
+        result.put(URL_ID, url);
+        return result;
+    }
 
 }

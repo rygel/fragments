@@ -2,6 +2,7 @@ package io.andromeda.fragments;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.andromeda.fragments.types.RouteType;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +29,6 @@ public class FragmentTest extends Assert {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
 
     @Test @SuppressWarnings("unchecked")
     public void testFragmentFileNotFound() throws Exception {
@@ -60,8 +60,6 @@ public class FragmentTest extends Assert {
         System.out.print(tags.get(0));
     }
 
-
-
     @Test @SuppressWarnings("unchecked")
     public void testEmptyFragment() throws Exception {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -77,7 +75,6 @@ public class FragmentTest extends Assert {
             }
         }));
     }
-
 
     @Test @SuppressWarnings("unchecked")
     public void testNoFrontMatter() throws Exception {
@@ -95,7 +92,6 @@ public class FragmentTest extends Assert {
         }));
     }
 
-
     @Test
     public void testNoFrontMatterSlug() throws Exception {
         String expected = "no_slug";
@@ -105,9 +101,37 @@ public class FragmentTest extends Assert {
     }
 
     @Test
-    public void testPreviewTextOnly() throws Exception {
+    public void testPreviewTextOnly() {
         String expected = "No HTML Tags";
         Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/preview_text_only.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        String result = staticPage.getPreviewTextOnly();
+        assertThat(result, equalTo(expected));
+    }
+
+    @Test
+    public void testDateOnly() {
+        String expected = "/blog/2017/01/12/blog_post_date_only";
+        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "");
+        configuration.setRouteType(RouteType.BLOG);
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_date_only.md", "en", configuration);
+        String result = staticPage.getUrl();
+        assertThat(result, equalTo(expected));
+    }
+
+    @Test
+    public void testDateTime() {
+        String expected = "/blog/2017/01/12/blog_post_date_time";
+        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "");
+        configuration.setRouteType(RouteType.BLOG);
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_date_time.md", "en", configuration);
+        String result = staticPage.getUrl();
+        assertThat(result, equalTo(expected));
+    }
+
+    @Test
+    public void testLanguage() {
+        String expected = "Quisque lectus magna, cursus non augue quis, blandit sollicitudin augue. Curabitur eget leo risus. Vivamus viverra nisi nec leo laoreet, vitae commodo nunc faucibus. Pellentesque non mauris ex. Proin blandit elementum sapien, ac viverra magna fermentum vel. Aliquam consectetur orci dui, at euismod libero ullamcorper et. Donec interdum vestibulum ligula, eget ultrices tortor convallis ut. Fusce at malesuada eros, nec luctus mauris. Pellentesque maximus ornare nibh, ac scelerisque sapien lacinia ut. Curabitur enim nunc, dictum at pretium sed, volutpat nec odio. Nunc eu erat augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin elementum sit amet nisi eu rhoncus. Cras dolor dolor, posuere vel erat at, pellentesque feugiat urna.";
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
         String result = staticPage.getPreviewTextOnly();
         assertThat(result, equalTo(expected));
     }

@@ -45,7 +45,7 @@ Example of an Markdown file.
 title    : My First Event
 slug     : first-event
 template : event
-date     : 2017-01-12T12:12:12
+date     : 2017-01-12T12:12
 preview  : 
 order    : 
 visible  : false
@@ -57,6 +57,7 @@ This is the first event using Fragments.
 | Property         | Type    | Default value           | Description                                                                                                                                                                                                                       |
 |:-----------------|:--------|:------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | content          | String  | ""                      | The textual content of the fragment. If the fragment contains multiple languages, it contains the content of the current language.                                                                                                |
+| date             | String  | ""                      | The date(time) of the Fragment. It's pattern is "yyyy-MM-dd['T'HH:mm]". So either 2018-01-02 or 2018-01-02T10:11.                                                                                                                                                                                            |
 | defaultLanguage  | String  | ""                      | The default language of the fragment.                                                                                                                                                                                             |
 | fullUrl          | String  | The full URL.           | The full URL of the fragment, the concatenation of protocol, domain, fragments.baseURL and fragment.url.                                                                                                                          |
 | fullUrlEncoded   | String  | The full encoded URL.   | The full URL of the fragment, the concatenation of protocol, domain, fragments.baseURL and frgment.url encoded to be used as a parameter for Facebook or Whatsapp sharing.                                                        |

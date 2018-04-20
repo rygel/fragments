@@ -17,6 +17,7 @@ package io.andromeda.fragments.search;
 
 import io.andromeda.fragments.Fragment;
 import io.andromeda.fragments.Fragments;
+import io.andromeda.fragments.Utilities;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -45,24 +46,15 @@ import static io.andromeda.fragments.Constants.FULL_URL_ID;
 import static io.andromeda.fragments.Constants.PREVIEW_ID;
 import static io.andromeda.fragments.Constants.SLUG_ID;
 import static io.andromeda.fragments.Constants.TITLE_ID;
+import static io.andromeda.fragments.Utilities.PAGINATION_ID;
 
 /**
  * Custom Lucene DB for Fragments data.
  * @author Alexander Brandt
  */
 public class FragmentsLuceneIndex {
-    public static final String ACTIVE_ID = "active";
-    public static final String FIRST_ID = "first";
-    public static final String LAST_ID = "last";
-    public static final String NEXT_ID = "next";
     public static final String PAGES_ID = "pages";
-    public static final String PAGINATION_ID = "pagination";
-    public static final String PREVIOUS_ID = "previous";
     public static final String RESULTS_ID = "results";
-    public static final String TEXT_ID = "text";
-    public static final String URL_ID = "url";
-    public static final String TRUE = "true";
-    public static final String FALSE = "false";
 
     private SearchConfiguration configuration;
     private IndexWriter indexWriter;
@@ -168,7 +160,7 @@ public class FragmentsLuceneIndex {
             TopDocs docs = collector.topDocs(startIndex, configuration.getHitsPerPage());
             ScoreDoc[] hits = docs.scoreDocs;
             result.put(PAGES_ID, (int)(Math.ceil(docs.totalHits/10.)));
-            result.put(PAGINATION_ID, calculatePagination(page, docs.totalHits));
+            result.put(PAGINATION_ID, Utilities.calculatePagination(page, configuration.getMaxNoInPagination(), docs.totalHits));
             for (int i = 0; i < hits.length; ++i) {
                 Map<String, Object> item = new TreeMap<>();
                 int docId = hits[i].doc;
@@ -184,75 +176,6 @@ public class FragmentsLuceneIndex {
         } catch (IOException|ParseException e) {
             LOGGER.error(e.toString());
         }
-        return result;
-    }
-
-    public Map<String, Object> calculatePagination(int currentPage, long totalHits) {
-        Map<String, Object> result = new TreeMap<>();
-
-        int maxNoInPagination = configuration.getMaxNoInPagination();
-        int currentPagination = maxNoInPagination;
-        int maxPagesFromHits = (int)Math.ceil(totalHits/10.);
-
-        if (maxNoInPagination > maxPagesFromHits) {
-            maxNoInPagination = maxPagesFromHits;
-        }
-        int fromPage = currentPage - (maxNoInPagination - 1)/2;
-        int toPage = currentPage + (maxNoInPagination - 1)/2;
-
-        int lowerDifference = 0 - fromPage + 1;
-
-        if (lowerDifference > 0) {
-            fromPage = 1;
-            toPage = toPage + lowerDifference;
-        }
-
-        while (toPage > maxPagesFromHits) {
-            toPage = toPage - 1;
-            fromPage = fromPage - 1;
-        }
-        LOGGER.debug("fromPage: {}, toPage: {}", fromPage, toPage);
-
-        if (maxPagesFromHits <= maxNoInPagination) {
-            currentPagination = maxPagesFromHits;
-            result.put(NEXT_ID, getItem(NEXT_ID, false, Integer.toString(currentPagination)));
-            result.put(LAST_ID, getItem(LAST_ID, false, Integer.toString(maxPagesFromHits)));
-        } else {
-            result.put(NEXT_ID, getItem(NEXT_ID, true, Integer.toString(currentPage + 1)));
-            result.put(LAST_ID, getItem(LAST_ID, true, Integer.toString(maxPagesFromHits)));
-        }
-
-        if (currentPage == 1) {
-            result.put(FIRST_ID, getItem(FIRST_ID, false, Integer.toString(1)));
-            result.put(PREVIOUS_ID, getItem(PREVIOUS_ID, false, Integer.toString(1)));
-        } else {
-            result.put(FIRST_ID, getItem(FIRST_ID, true, Integer.toString(1)));
-            result.put(PREVIOUS_ID, getItem(PREVIOUS_ID, true, Integer.toString(currentPage - 1)));
-        }
-
-        if (currentPage == maxPagesFromHits) {
-            result.put(NEXT_ID, getItem(NEXT_ID, false, Integer.toString(currentPage)));
-            result.put(LAST_ID, getItem(LAST_ID, false, Integer.toString(maxPagesFromHits)));
-        }
-
-        int counter = 0;
-        for(int i = fromPage; i < toPage + 1; i++) {
-            counter = counter + 1;
-            result.put(Integer.toString(counter), getItem(Integer.toString(i), true, Integer.toString(i)));
-        }
-
-        return result;
-    }
-
-    public Map<String, Object> getItem(String text, boolean active, String url) {
-        Map<String, Object> result = new TreeMap<>();
-        result.put(TEXT_ID, text);
-        if (active) {
-            result.put(ACTIVE_ID, TRUE);
-        } else {
-            result.put(ACTIVE_ID, FALSE);
-        }
-        result.put(URL_ID, url);
         return result;
     }
 
