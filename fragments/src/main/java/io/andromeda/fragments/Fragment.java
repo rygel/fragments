@@ -548,7 +548,11 @@ public class Fragment implements Comparable<Fragment> {
      * @return The title of the Fragment in the current language.
      */
     public String getTitle() {
-        return title;
+        if (title == null) {
+            return "";
+        } else {
+            return title;
+        }
     }
 
     /**

@@ -38,7 +38,7 @@ public class DBConfiguration {
         Path path = Paths.get(fragments.getDataDirectory()).normalize().toAbsolutePath();
         String dbFileLocation = path.getParent().toString() + "/";
         /* Append the name of the Fragments instance to the connection path to be able to distinguish between different
-         * databeses. */
+         * databases. */
         dbFileLocation += fragments.getName();
         connection += dbFileLocation;
     }

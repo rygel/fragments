@@ -229,23 +229,25 @@ public class Fragments {
     private void prepareFragments(){
         int counter = 0;
         /* Make sure that the fragments are ordered by Title before changing/overwriting the order! */
-        allFragments.sort(byOrderThenTitle);
-        for (Fragment fragment: allFragments) {
-            fragment.setFullUrl(configuration.getProtocol() + configuration.getDomain() + fragment.getUrl());
-            //Create the URLEncoded  url
-            try {
-                fragment.setFullUrlEncoded(URLEncoder.encode(fragment.getFullUrl(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                LOGGER.error("Error: Cannot convert URL: {}! {}", fragment.getUrl(), e);
-            }
+        if (allFragments.size() > 0) {
+            allFragments.sort(byOrderThenTitle);
+            for (Fragment fragment : allFragments) {
+                fragment.setFullUrl(configuration.getProtocol() + configuration.getDomain() + fragment.getUrl());
+                //Create the URLEncoded  url
+                try {
+                    fragment.setFullUrlEncoded(URLEncoder.encode(fragment.getFullUrl(), "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    LOGGER.error("Error: Cannot convert URL: {}! {}", fragment.getUrl(), e);
+                }
 
-            if (fragment.getOrder() == Integer.MAX_VALUE) {
-                fragment.setOrder(counter);
-            }
-            counter++;
+                if (fragment.getOrder() == Integer.MAX_VALUE) {
+                    fragment.setOrder(counter);
+                }
+                counter++;
 
-            handleTaxonomies(fragment, fragment.getTags(), allTags, visibleTags);
-            handleTaxonomies(fragment, fragment.getCategories(), allCategories, visibleCategories);
+                handleTaxonomies(fragment, fragment.getTags(), allTags, visibleTags);
+                handleTaxonomies(fragment, fragment.getCategories(), allCategories, visibleCategories);
+            }
         }
     }
 
