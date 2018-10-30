@@ -116,7 +116,7 @@ public class Fragments {
                         dataDirectory, configuration.getName());
             }
         } else {
-            LOGGER.info("Error: {}", location);
+            LOGGER.info(location.toString());
         }
 
         if (dataDirectory == null) {

@@ -119,7 +119,7 @@ public class Fragment implements Comparable<Fragment> {
                 LOGGER.info("Loaded: {}", filename);
             }
         } catch (Exception e) {
-            LOGGER.error("Error reading file ({}): {}", filename, e);
+            LOGGER.error("Error reading file ({}): {}", filename, e.toString());
         }
     }
 
