@@ -183,7 +183,7 @@ public class FragmentTest extends Assert {
                 "</tbody>\n" +
                 "</table>\n";
         Configuration configuration = new Configuration("Test", "/test", Paths.get(""), "", "");
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/tables.md", "en", configuration);
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/tables/tables.md", "en", configuration);
         String result = staticPage.getContent();
         assertThat(result, equalTo(expected));
     }

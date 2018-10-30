@@ -20,8 +20,6 @@ import io.andromeda.fragments.db.DBSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Application;
-import ro.pippo.core.route.RouteContext;
-import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.ClasspathUtils;
 
 import java.io.IOException;
@@ -111,14 +109,14 @@ public class Fragments {
                 try {
                     location =  fragmentsPath.toUri().toURL();
                 } catch (MalformedURLException e) {
-                    LOGGER.error("Problems working with the fragments path: " + e.toString());
+                    LOGGER.error("Problems working with the fragments path: {}", e);
                 }
             } else {
                 LOGGER.error("The directory for the fragments data (\"{}\") for fragments \"{}\" does not exist or does not contain any files! The fragments will not be loaded.",
                         dataDirectory, configuration.getName());
             }
         } else {
-            LOGGER.info(location.toString());
+            LOGGER.info("Error: {}", location);
         }
 
         if (dataDirectory == null) {
@@ -177,48 +175,42 @@ public class Fragments {
 
     public void registerFragments() {
         for (final Fragment fragment : visibleFragments) {
-            application.GET(fragment.getUrl(), new RouteHandler() {
-                @Override
-                public void handle(RouteContext routeContext) {
-                    final Map<String, Object> context = new TreeMap<>(defaultContext);
-                    String lang = routeContext.getParameter("lang").toString();
-                    fragment.update(lang);
-                    fragment.setContext(context, false);
-                    context.put(Constants.FRAGMENT_ID, fragment);
-                    context.put("overview_url", urlPath);
-                    context.put("fragments", getVisibleFragmentOrdered(byOrder));
-                    context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
-                    context.put("all_fragments", allFragments);
+            application.GET(fragment.getUrl(), routeContext -> {
+                final Map<String, Object> context = new TreeMap<>(defaultContext);
+                String lang = routeContext.getParameter("lang").toString();
+                fragment.update(lang);
+                fragment.setContext(context, false);
+                context.put(Constants.FRAGMENT_ID, fragment);
+                context.put("overview_url", urlPath);
+                context.put("fragments", getVisibleFragmentOrdered(byOrder));
+                context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
+                context.put("all_fragments", allFragments);
 
-                    context.putAll(configuration.getDynamicContext(context));
-                    if (dbsupport != null) {
-                        context.put("top_fragments", dbsupport.getTopFragments());
-                        dbsupport.addClick(fragment);
-                    }
-                    context.put("lang", lang);
-
-                    routeContext.render(fragment.getTemplate(), context);
+                context.putAll(configuration.getDynamicContext(context));
+                if (dbsupport != null) {
+                    context.put("top_fragments", dbsupport.getTopFragments());
+                    dbsupport.addClick(fragment);
                 }
+                context.put("lang", lang);
+
+                routeContext.render(fragment.getTemplate(), context);
             });
         }
         if (configuration.registerOverviewRoute()) {
             String route = Utilities.removeTrailingSlash(urlPath);
-            application.GET(route, new RouteHandler() {
-                @Override
-                public void handle(RouteContext routeContext) {
-                    for (Fragment fragment: allFragments) {
-                        fragment.update(routeContext.getParameter("lang").toString());
-                    }
-                    final Map<String, Object> context = new TreeMap<>(defaultContext);
-                    context.put("overview_url", urlPath);
-                    context.put("fragments", getVisibleFragmentOrdered(byOrder));
-                    context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
-                    context.put("all_fragments", allFragments);
-                    if (dbsupport != null) {
-                        context.put("top_fragments", dbsupport.getTopFragments());
-                    }
-                    routeContext.render(overviewTemplate, context);
+            application.GET(route, routeContext -> {
+                for (Fragment fragment: allFragments) {
+                    fragment.update(routeContext.getParameter("lang").toString());
                 }
+                final Map<String, Object> context = new TreeMap<>(defaultContext);
+                context.put("overview_url", urlPath);
+                context.put("fragments", getVisibleFragmentOrdered(byOrder));
+                context.put("fragments_ordered_by_title", getVisibleFragmentOrdered(byTitle));
+                context.put("all_fragments", allFragments);
+                if (dbsupport != null) {
+                    context.put("top_fragments", dbsupport.getTopFragments());
+                }
+                routeContext.render(overviewTemplate, context);
             });
         }
     }
@@ -229,7 +221,7 @@ public class Fragments {
     private void prepareFragments(){
         int counter = 0;
         /* Make sure that the fragments are ordered by Title before changing/overwriting the order! */
-        if (allFragments.size() > 0) {
+        if (!allFragments.isEmpty()) {
             allFragments.sort(byOrderThenTitle);
             for (Fragment fragment : allFragments) {
                 fragment.setFullUrl(configuration.getProtocol() + configuration.getDomain() + fragment.getUrl());

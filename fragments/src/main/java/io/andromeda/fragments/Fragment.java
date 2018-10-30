@@ -404,8 +404,7 @@ public class Fragment implements Comparable<Fragment> {
      * @return The content of this Fragment.
      */
     public String getContent() {
-        // Fixes output of \u2027 characters from GFM tables
-        return content.replace("\u2028", "");
+        return content;
     }
 
     /**
