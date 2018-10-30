@@ -119,7 +119,7 @@ public class Fragment implements Comparable<Fragment> {
                 LOGGER.info("Loaded: {}", filename);
             }
         } catch (Exception e) {
-            LOGGER.error("Error reading file ({}): {}", filename, e.toString());
+            LOGGER.error("Error reading file ({}): {}", filename, e);
         }
     }
 
@@ -379,6 +379,11 @@ public class Fragment implements Comparable<Fragment> {
     @Override
     public int compareTo(Fragment other) {
         return this.order - other.order;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
     }
 
     /********** Getters ***********************************************************************************************/
