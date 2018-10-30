@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -187,6 +188,21 @@ public class FragmentTest extends Assert {
         String result = staticPage.getContent();
         assertThat(result, equalTo(expected));
     }
+
+    @Test
+    public void testCompareFragmentsEqual() {
+        Fragment expected = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment result = expected;
+        assertThat(result, equalTo(expected));
+    }
+
+    @Test
+    public void testCompareFragmentsNotEqual() {
+        Fragment expected = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment result = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/tables/tables.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        assertThat(result, not(expected));
+    }
+
 
 
     /*@Test

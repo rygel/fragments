@@ -147,4 +147,12 @@ public class FragmentsTest {
         }));
     }
 
+    @Test
+    public void testFragmentsCompareTo() {
+        String currentPath = System.getProperty("user.dir");
+        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/more_tags/"), "", "");
+        Fragments fragments = new Fragments(new Application(), configuration);
+        List<Fragment> items = fragments.getFragments(true);
+    }
+
 }

@@ -317,13 +317,6 @@
                 <properties>
                     <packaging.type>jar</packaging.type>
                 </properties>
-                <dependencies>
-                    <dependency>
-                        <groupId>ro.pippo</groupId>
-                        <artifactId>pippo-jetty</artifactId>
-                        <version>${pippo.version}</version>
-                    </dependency>
-                </dependencies>
             </profile>
             <profile>
                 <id>war</id>

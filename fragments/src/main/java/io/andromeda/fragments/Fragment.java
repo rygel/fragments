@@ -63,7 +63,7 @@ import static ro.pippo.core.util.ClasspathUtils.locateOnClasspath;
  *
  * @author Alexander Brandt
  */
-public class Fragment implements Comparable<Fragment> {
+public class Fragment {
     /**
      * The logger instance for this class.
      */
@@ -374,16 +374,6 @@ public class Fragment implements Comparable<Fragment> {
             }
     }
 
-    }
-
-    @Override
-    public int compareTo(Fragment other) {
-        return this.order - other.order;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj;
     }
 
     /********** Getters ***********************************************************************************************/
