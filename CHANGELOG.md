@@ -7,8 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 - Fixed date parsing for RouteType.Blog.
 - Fix NPE in prepareFragments (#1).
-- Correctly setup Flexmark for processing Markdown tables.
-- Workaround for \u2028 characters appearing in output generated from Markdown tables.
+- Correctly setup flexmark for processing Markdown tables.
 
 #### Changed
 - Updated flexmark to 0.32.56.

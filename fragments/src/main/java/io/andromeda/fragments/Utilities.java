@@ -77,7 +77,7 @@ public class Utilities {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < email.length(); i++) {
       char c = email.charAt(i);
-      switch (random.nextInt(5)) {
+      switch (random.nextInt(5)) { //NOSONAR
         case 0:
         case 1:
           sb.append("&#").append((int) c).append(';');
