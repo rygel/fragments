@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.andromeda.fragments</groupId>
     <artifactId>fragments-demo</artifactId>
-    <version>0.0.22</version>
+    <version>0.0.23-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>fragments-demo</name>
     <description>A Pippo application</description>
@@ -12,7 +12,7 @@
     <parent>
         <artifactId>fragments-parent</artifactId>
         <groupId>io.andromeda</groupId>
-        <version>0.0.22</version>
+        <version>0.0.23-SNAPSHOT</version>
     </parent>
 
     <licenses>
