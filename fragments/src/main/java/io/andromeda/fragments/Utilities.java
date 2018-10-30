@@ -30,7 +30,7 @@ public class Utilities {
     /** The logger instance for this class. */
     private static final Logger LOGGER = LoggerFactory.getLogger(Utilities.class);
 
-    private static Random random = new Random(0x2626);
+    private static Random random = new Random(0x2626); //NOSONAR 
 
     public static final String ACTIVE_ID = "active";
     public static final String FIRST_ID = "first";
