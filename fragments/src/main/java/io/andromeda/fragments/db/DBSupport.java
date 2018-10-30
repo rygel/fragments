@@ -109,14 +109,14 @@ public class DBSupport {
                     .executeScalar(Long.class);
 
 
-            con.createQuery(sql)
-                    .addParameter("p_name", fragment.getFilename())
-                    .addParameter("p_clicks", ++clicks)
+            con.createQuery(sqlInsert)
+                    .addParameter("name", fragment.getFilename())
+                    .addParameter("clicks", ++clicks)
                     .executeUpdate()
                     .getKey();
             con.commit();
         } catch (Exception exception) {
-            LOGGER.error("Exception: " + exception);
+            LOGGER.error("Exception: {}", exception);
         }
     }
 
@@ -125,7 +125,7 @@ public class DBSupport {
     }
 
     public List<Fragment> getTopFragments(int numberOfTopFragments) {
-        String sql = "SELECT id FROM author WHERE p_username = ':p_username'";
+        //String sql = "SELECT id FROM author WHERE p_username = ':p_username'";
 
         /*List<Author> author = new ArrayList<Author>();
         try (Connection con = sql2o.open()) {
