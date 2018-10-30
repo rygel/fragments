@@ -25,7 +25,7 @@ public class DBTest {
         Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"), "", "");
 
         Fragments fragments = new Fragments(new Application(), configuration);
-        DBConfiguration dbConfig = new DBConfiguration(fragments);
+        DBConfiguration dbConfig = new DBConfiguration(fragments, "1234");
         //fragments.d
         dbConfig.setResetDB(true);
         fragments.enableDatabase(dbConfig);

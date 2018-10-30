@@ -28,14 +28,15 @@ public class DBConfiguration {
     private final String driver = "org.h2.Driver";
     private String connection = "jdbc:h2:";
     private final String username = "fragments";
-    private final String password = "1234";
+    private String password;
     private final String name;
     private boolean resetDB = false;
 
-    public DBConfiguration(Fragments fragments) {
+    public DBConfiguration(Fragments fragments, String password) {
         String nameTemplate = "fragments_clicks_";
         name = nameTemplate + fragments.getName();
         Path path = Paths.get(fragments.getDataDirectory()).normalize().toAbsolutePath();
+        this.password = password;
         String dbFileLocation = path.getParent().toString() + "/";
         /* Append the name of the Fragments instance to the connection path to be able to distinguish between different
          * databases. */

@@ -44,6 +44,13 @@ public class UtilitiesTest {
     }
 
     @Test
+    public void testObfuscate() {
+        String expected = "&#116;e&#115;&#x74;&#x40;&#x61;&#x6e;&#100;&#x72;&#x6f;m&#101;&#x64;&#97;.&#105;&#111;";
+        String result = Utilities.obfuscate("test@andromeda.io");
+        assertThat(result, equalTo(expected));
+    }
+
+    @Test
     public void testCalculatePaginationPage1Of10() throws Exception {
         Map<String, Object> context = Utilities.calculatePagination(1, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
