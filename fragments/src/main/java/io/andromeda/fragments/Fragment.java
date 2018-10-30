@@ -21,6 +21,9 @@ import com.vladsch.flexmark.ast.Node;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.format.options.DiscretionaryText;
+import com.vladsch.flexmark.util.mappers.CharWidthProvider;
+import com.vladsch.flexmark.util.options.MutableDataSet;
 import io.andromeda.fragments.types.FrontMatterType;
 import io.andromeda.fragments.types.RouteType;
 import org.apache.commons.io.FilenameUtils;
@@ -47,7 +50,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -295,13 +297,19 @@ public class Fragment implements Comparable<Fragment> {
     }
 
     protected String parseMarkdown(final String content) {
-        Parser parser = Parser.builder().build();
-        Node document = parser.parse(content);
-        HtmlRenderer.Builder builder = HtmlRenderer.builder();
         Extension tablesExtension = TablesExtension.create();
         List<Extension> extensions = new ArrayList<>();
         extensions.add(tablesExtension);
-        builder.extensions(extensions);
+
+        MutableDataSet options = new MutableDataSet();
+        options.set(Parser.EXTENSIONS, extensions);
+        //options.set(TablesExtension.TRIM_CELL_WHITESPACE, true);
+        // options.set(TablesExtension.HEADER_SEPARATOR_COLUMN_MATCH, false);
+        //options.set(TablesExtension.FORMAT_LEFT_ALIGN_MARKER, DiscretionaryText.ADD);
+        //options.set(TablesExtension.FORMAT_CHAR_WIDTH_PROVIDER, new CharWidthProvider());
+        Parser parser = Parser.builder(options).build();
+        Node document = parser.parse(content);
+        HtmlRenderer.Builder builder = HtmlRenderer.builder(options);
         builder.set(HtmlRenderer.OBFUSCATE_EMAIL, true);
         HtmlRenderer renderer = builder.build();
         return renderer.render(document);
@@ -396,7 +404,8 @@ public class Fragment implements Comparable<Fragment> {
      * @return The content of this Fragment.
      */
     public String getContent() {
-        return content;
+        // Fixes output of \u2027 characters from GFM tables
+        return content.replace("\u2028", "");
     }
 
     /**

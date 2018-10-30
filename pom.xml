@@ -25,9 +25,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <flexmark.version>0.32.20</flexmark.version>
+        <flexmark.version>0.34.56</flexmark.version>
         <slf4j.version>1.7.25</slf4j.version>
         <pippo.version>1.1.0</pippo.version>
+        <lucene.version>7.4.0</lucene.version>
         <cobertura.version>2.7</cobertura.version>
         <coveralls.version>3.1.0</coveralls.version>
         <main.class>io.andromeda.fragmentsdemo.PippoLauncher</main.class>

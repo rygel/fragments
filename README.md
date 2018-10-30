@@ -35,7 +35,7 @@ For this I have created Fragments. It holds all markdown files and creates route
 ## How to use
 Configure fragments.
 ```java
- Fragments froot = new Fragments(this,"Root", "/", currentPath + "/data/fragments/root", "", "static_page", defaultContext, configuration);
+ Fragments froot = new Fragments(this, "Root", "/", currentPath + "/data/fragments/root", "", "static_page", defaultContext, configuration);
 ```
 
 Example of an Markdown file.

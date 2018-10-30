@@ -172,6 +172,22 @@ public class FragmentTest extends Assert {
         assertThat(result, equalTo(expected));
     }
 
+    @Test
+    public void testMarkdownTables() {
+        String expected = "<table>\n" +
+                "<thead>\n" +
+                "<tr><th align=\"left\">Header 1</th><th align=\"left\">Header 2</th></tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr><td align=\"left\">Row 1</td><td align=\"left\">Row 2</td></tr>\n" +
+                "</tbody>\n" +
+                "</table>\n";
+        Configuration configuration = new Configuration("Test", "/test", Paths.get(""), "", "");
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/tables.md", "en", configuration);
+        String result = staticPage.getContent();
+        assertThat(result, equalTo(expected));
+    }
+
 
     /*@Test
     public void testFragmentDateIsShort() throws Exception {
