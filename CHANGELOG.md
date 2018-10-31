@@ -2,7 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### [0.0.22]
+### [unreleased]
+
+#### Fixed
+
+#### Changed
+- Updated h2database to 1.4.197.
+
+#### Added
+
+#### Removed
+
+
+### [0.0.22] 2018-10-30
 
 #### Fixed
 - Fixed date parsing for RouteType.Blog.
@@ -16,7 +28,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
-### [0.0.21]2018-04-05
+### [0.0.21] 2018-04-05
 
 #### Fixed
 
@@ -30,7 +42,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
-### [0.0.20]2018-02-24
+### [0.0.20] 2018-02-24
 
 #### Fixed
 
@@ -39,7 +51,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - Added dynamic context functionality
 
-### [0.0.18]2017-03-12
+### [0.0.18] 2017-03-12
 
 #### Fixed
 
@@ -51,7 +63,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
-### [0.0.16] - 2017-03-
+### [0.0.16] 2017-03-
 
 #### Fixed
 
@@ -63,7 +75,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Removed
 
-### [0.0.12] - 2017-01-24
+### [0.0.12] 2017-01-24
 
 #### Fixed
 - Bug fixes
