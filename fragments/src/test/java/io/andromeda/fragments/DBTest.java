@@ -1,6 +1,7 @@
 package io.andromeda.fragments;
 
 import io.andromeda.fragments.db.DBConfiguration;
+import io.andromeda.fragments.db.DBSupport;
 import org.junit.Test;
 import ro.pippo.core.Application;
 
@@ -19,7 +20,7 @@ public class DBTest {
 
     /** Test all properties of a Fragment. */
     @Test
-    public void testFragmentsDBSupport() throws Exception {
+    public void testFragmentsDBSupport() {
         Date expectedDate = Date.from(Instant.parse("2017-01-02T00:00:00.000Z"));
         String currentPath = System.getProperty("user.dir");
         Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"), "", "");
@@ -28,7 +29,7 @@ public class DBTest {
         DBConfiguration dbConfig = new DBConfiguration(fragments, "1234");
         //fragments.d
         dbConfig.setResetDB(true);
-        fragments.enableDatabase(dbConfig);
+        DBSupport dbSupport = fragments.enableDatabase(dbConfig);
 
         List<Fragment> items = fragments.getFragments(true);
         Fragment fragment = items.get(0);
@@ -38,6 +39,9 @@ public class DBTest {
         assertThat(fragment.getOrder(), equalTo(-100));
         assertThat(fragment.getVisible(), equalTo(false));
         assertThat(fragment.getPreview().trim(), equalTo("<p>Manual preview</p>"));
+
+        assertThat(dbSupport.getNumberOfClicks(fragment), equalTo(0L));
+        assertThat(dbSupport.addClick(fragment), equalTo(1L));
     }
 
 
