@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 /**
+ * A class holding utility methods.
  * @author Alexander Brandt
  */
 public class Utilities {
@@ -53,6 +54,7 @@ public class Utilities {
 
     /**
      * Remove characters which are not allowed in a slug.
+     *
      * @param textToSlug The string which will be converted into a slug.
      * @return The converted string.
      */
@@ -62,6 +64,7 @@ public class Utilities {
 
     /**
      * Remove the trailing slash, but beware of "/".
+     *
      * @param pattern the URL pattern to check.
      * @return the pattern without the trailing slash.
      */
@@ -73,49 +76,56 @@ public class Utilities {
         }
     }
 
-  public static String obfuscate(String email) {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < email.length(); i++) {
-      char c = email.charAt(i);
-      switch (random.nextInt(5)) { //NOSONAR
-        case 0:
-        case 1:
-          sb.append("&#").append((int) c).append(';');
-          break;
-        case 2:
-        case 3:
-          sb.append("&#x").append(Integer.toHexString(c)).append(';');
-          break;
-        case 4:
-          String encoded = encode(c);
-          if (encoded != null) sb.append(encoded); else sb.append(c);
-      }
+    public static String obfuscate(String email) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < email.length(); i++) {
+            char c = email.charAt(i);
+            switch (random.nextInt(5)) { //NOSONAR
+                case 0:
+                case 1:
+                    sb.append("&#").append((int) c).append(';');
+                    break;
+                case 2:
+                case 3:
+                    sb.append("&#x").append(Integer.toHexString(c)).append(';');
+                    break;
+                case 4:
+                    String encoded = encode(c);
+                    if (encoded != null) sb.append(encoded);
+                    else sb.append(c);
+            }
+        }
+        return sb.toString();
     }
-    return sb.toString();
-  }
 
-  public static String encode(char c) {
-    switch (c) {
-      case '&':  return "&amp;";
-      case '<':  return "&lt;";
-      case '>':  return "&gt;";
-      case '"':  return "&quot;";
-      case '\'': return "&#39;";
-      default: return null;
+    public static String encode(char c) {
+        switch (c) {
+            case '&':
+                return "&amp;";
+            case '<':
+                return "&lt;";
+            case '>':
+                return "&gt;";
+            case '"':
+                return "&quot;";
+            case '\'':
+                return "&#39;";
+            default:
+                return null;
+        }
     }
-  }
 
-    public static Map<String, Object> calculatePagination(int currentPage, int maxNoInPagination,  long totalHits) {
+    public static Map<String, Object> calculatePagination(int currentPage, int maxNoInPagination, long totalHits) {
         Map<String, Object> result = new TreeMap<>();
 
-        int currentPagination = maxNoInPagination;
-        int maxPagesFromHits = (int)Math.ceil(totalHits/10.);
+        int currentPagination;
+        int maxPagesFromHits = (int) Math.ceil(totalHits / 10.);
 
         if (maxNoInPagination > maxPagesFromHits) {
             maxNoInPagination = maxPagesFromHits;
         }
-        int fromPage = currentPage - (maxNoInPagination - 1)/2;
-        int toPage = currentPage + (maxNoInPagination - 1)/2;
+        int fromPage = currentPage - (maxNoInPagination - 1) / 2;
+        int toPage = currentPage + (maxNoInPagination - 1) / 2;
 
         int lowerDifference = 0 - fromPage + 1;
 
@@ -153,7 +163,7 @@ public class Utilities {
         }
 
         int counter = 0;
-        for(int i = fromPage; i < toPage + 1; i++) {
+        for (int i = fromPage; i < toPage + 1; i++) {
             counter = counter + 1;
             result.put(Integer.toString(counter), getItem(Integer.toString(i), true, Integer.toString(i)));
         }
@@ -172,5 +182,4 @@ public class Utilities {
         result.put(URL_ID, url);
         return result;
     }
-
 }
