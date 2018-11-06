@@ -6,8 +6,6 @@ import ro.pippo.core.Application;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +25,8 @@ public class ConfigurationTest {
         Path dataDirectory = Paths.get(currentPath + "/src/test/resources/fragments/tests/");
         String overviewTemplate = "overview.peb";
         String defaultTemplate = "default.peb";
-        Configuration configuration = new Configuration(name, urlPath, dataDirectory, overviewTemplate, defaultTemplate);
+        Configuration configuration = new Configuration(name, urlPath, dataDirectory, overviewTemplate, defaultTemplate,
+                0);
         String extension = ".txt";
         String domain = "test.test";
         String protocol = "https://";
@@ -56,7 +55,9 @@ public class ConfigurationTest {
     @Test
     public void testFragmentsDifferentExtension() throws Exception {
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"), "", "");
+        Configuration configuration = new Configuration("order", "/",
+                Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"), "",
+                "", 0);
         configuration.setExtension(".txt");
         Fragments fragments = new Fragments(new Application(), configuration);
         List<Fragment> items = fragments.getFragments(true);

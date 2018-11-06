@@ -38,6 +38,7 @@ public class Configuration {
     private Path dataDirectory;
     private String overviewTemplate;
     private String defaultTemplate;
+    private int noOfItemsPerPage;
     private DynamicContext dynamicContext;
 
     /**
@@ -60,12 +61,14 @@ public class Configuration {
      * @param defaultTemplate Template to be used for the individual page, e.g. urlPath/slug. Can be overwritten inside
      *                        the front matter.
      */
-    public Configuration(String name, String urlPath, Path dataDirectory, String overviewTemplate, String defaultTemplate){
+    public Configuration(String name, String urlPath, Path dataDirectory, String overviewTemplate,
+                         String defaultTemplate, int noOfItemsPerPage){
         this.name = name;
         this.urlPath = urlPath;
         this.dataDirectory = dataDirectory;
         this.overviewTemplate = overviewTemplate;
         this.defaultTemplate = defaultTemplate;
+        this.noOfItemsPerPage = noOfItemsPerPage;
     }
 
     /********** Getters ***********************************************************************************************/

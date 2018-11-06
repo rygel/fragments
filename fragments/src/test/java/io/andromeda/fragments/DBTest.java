@@ -23,7 +23,9 @@ public class DBTest {
     public void testFragmentsDBSupport() {
         Date expectedDate = Date.from(Instant.parse("2017-01-02T00:00:00.000Z"));
         String currentPath = System.getProperty("user.dir");
-        Configuration configuration = new Configuration("order", "/", Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"), "", "");
+        Configuration configuration = new Configuration("order", "/",
+                Paths.get(currentPath + "/src/test/resources/fragments/tests/general/"), "",
+                "", 0);
 
         Fragments fragments = new Fragments(new Application(), configuration);
         DBConfiguration dbConfig = new DBConfiguration(fragments, "1234");

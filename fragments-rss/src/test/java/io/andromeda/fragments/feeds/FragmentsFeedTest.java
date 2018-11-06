@@ -21,7 +21,7 @@ public class FragmentsFeedTest extends Assert {
 
         String currentPath = System.getProperty("user.dir");
         Configuration fragmentsConfiguration = new Configuration("Feeds", "/",
-                Paths.get(currentPath + "/src/test/resources/fragments/tests/feeds"), "", "");
+                Paths.get(currentPath + "/src/test/resources/fragments/tests/feeds"), "", "", 0);
         Fragments fragments = new Fragments(new Application(), fragmentsConfiguration);
 
         FeedConfiguration configuration = new FeedConfiguration(FeedType.RSS_2_0, Paths.get("feeds.xml"), "Test Title",

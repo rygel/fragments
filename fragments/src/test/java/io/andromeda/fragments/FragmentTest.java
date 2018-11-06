@@ -44,7 +44,9 @@ public class FragmentTest extends Assert {
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
 
-        Fragment fragment = new Fragment("file_not_found.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment fragment = new Fragment("file_not_found.md", "en",
+                new Configuration("Test", "/", Paths.get(""), "", "",
+                        0));
 
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
@@ -58,7 +60,8 @@ public class FragmentTest extends Assert {
     public void testFragmentGeneral() {
         Path directory = Paths.get(System.getProperty("user.dir"), "/src/test/resources/fragments/tests/blog/");
         String expectedFilename = Paths.get(directory.toString(), "/blog_post_date_time.md").toString();
-        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "");
+        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""),
+                "", "", 0);
         String expectedDefaultLanguage = "en";
         Fragment staticPage = new Fragment(expectedFilename, expectedDefaultLanguage, configuration);
         Path result = Paths.get(staticPage.getDirectory());
@@ -91,7 +94,8 @@ public class FragmentTest extends Assert {
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
 
-        Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/categories_and_tags_json.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment fragment = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/categories_and_tags_json.md", "en",
+                new Configuration("Test", "/", Paths.get(""), "", "", 0));
         List tags = (List)fragment.getFrontMatter().get("tags");
         int size = tags.size();
         System.out.print(tags.get(0));
@@ -103,7 +107,8 @@ public class FragmentTest extends Assert {
         final Appender mockAppender = mock(Appender.class);
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/empty_post.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/empty_post.md", "en",
+                new Configuration("Test", "/", Paths.get(""), "", "", 0));
 
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
@@ -119,7 +124,8 @@ public class FragmentTest extends Assert {
         final Appender mockAppender = mock(Appender.class);
         when(mockAppender.getName()).thenReturn("MOCK");
         root.addAppender(mockAppender);
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_front_matter.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_front_matter.md", "en",
+                new Configuration("Test", "/", Paths.get(""), "", "", 0));
 
         verify(mockAppender).doAppend(argThat(new ArgumentMatcher() {
             @Override
@@ -132,7 +138,8 @@ public class FragmentTest extends Assert {
     @Test
     public void testNoFrontMatterSlug() throws Exception {
         String expected = "no_slug";
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_slug.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/no_slug.md", "en",
+                new Configuration("Test", "/", Paths.get(""), "", "", 0));
         String result = staticPage.getSlug();
         assertThat(result, equalTo(expected));
     }
@@ -140,7 +147,8 @@ public class FragmentTest extends Assert {
     @Test
     public void testPreviewTextOnly() {
         String expected = "No HTML Tags";
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/preview_text_only.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/blog/preview_text_only.md", "en",
+                new Configuration("Test", "/", Paths.get(""), "", "", 0));
         String result = staticPage.getPreviewTextOnly();
         assertThat(result, equalTo(expected));
     }
@@ -148,7 +156,7 @@ public class FragmentTest extends Assert {
     @Test
     public void testDateOnly() {
         String expected = "/blog/2017/01/12/blog_post_date_only";
-        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "");
+        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "", 0);
         configuration.setRouteType(RouteType.BLOG);
         Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_date_only.md", "en", configuration);
         String result = staticPage.getUrl();
@@ -158,7 +166,7 @@ public class FragmentTest extends Assert {
     @Test
     public void testDateTime() {
         String expected = "/blog/2017/01/12/blog_post_date_time";
-        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "");
+        Configuration configuration = new Configuration("Test", "/blog", Paths.get(""), "", "", 0);
         configuration.setRouteType(RouteType.BLOG);
         Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_date_time.md", "en", configuration);
         String result = staticPage.getUrl();
@@ -168,7 +176,7 @@ public class FragmentTest extends Assert {
     @Test
     public void testLanguage() {
         String expected = "Quisque lectus magna, cursus non augue quis, blandit sollicitudin augue. Curabitur eget leo risus. Vivamus viverra nisi nec leo laoreet, vitae commodo nunc faucibus. Pellentesque non mauris ex. Proin blandit elementum sapien, ac viverra magna fermentum vel. Aliquam consectetur orci dui, at euismod libero ullamcorper et. Donec interdum vestibulum ligula, eget ultrices tortor convallis ut. Fusce at malesuada eros, nec luctus mauris. Pellentesque maximus ornare nibh, ac scelerisque sapien lacinia ut. Curabitur enim nunc, dictum at pretium sed, volutpat nec odio. Nunc eu erat augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin elementum sit amet nisi eu rhoncus. Cras dolor dolor, posuere vel erat at, pellentesque feugiat urna.";
-        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", "", 0));
         String result = staticPage.getPreviewTextOnly();
         assertThat(result, equalTo(expected));
     }
@@ -183,7 +191,7 @@ public class FragmentTest extends Assert {
                 "<tr><td align=\"left\">Row 1</td><td align=\"left\">Row 2</td></tr>\n" +
                 "</tbody>\n" +
                 "</table>\n";
-        Configuration configuration = new Configuration("Test", "/test", Paths.get(""), "", "");
+        Configuration configuration = new Configuration("Test", "/test", Paths.get(""), "", "", 0);
         Fragment staticPage = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/tables/tables.md", "en", configuration);
         String result = staticPage.getContent();
         assertThat(result, equalTo(expected));
@@ -191,15 +199,16 @@ public class FragmentTest extends Assert {
 
     @Test
     public void testCompareFragmentsEqual() {
-        Fragment expected = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment expected = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en",
+                new Configuration("Test", "/", Paths.get(""), "", "", 0));
         Fragment result = expected;
         assertThat(result, equalTo(expected));
     }
 
     @Test
     public void testCompareFragmentsNotEqual() {
-        Fragment expected = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
-        Fragment result = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/tables/tables.md", "en", new Configuration("Test", "/", Paths.get(""), "", ""));
+        Fragment expected = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/blog/blog_post_2.md", "en", new Configuration("Test", "/", Paths.get(""), "", "", 0));
+        Fragment result = new Fragment(System.getProperty("user.dir") + "/src/test/resources/fragments/tests/tables/tables.md", "en", new Configuration("Test", "/", Paths.get(""), "", "", 0));
         assertThat(result, not(expected));
     }
 
