@@ -1,7 +1,7 @@
 Fragments
 =========
 [![Build Status](https://travis-ci.org/rygel/fragments.svg?branch=master)](https://travis-ci.org/rygel/fragments)
-[![Coverage Status](https://coveralls.io/repos/github/rygel/fragments/badge.svg?branch=master)](https://coveralls.io/github/rygel/fragments?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/rygel/fragments/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/rygel/fragments?branch=master)
 [![Maven Central](http://img.shields.io/maven-central/v/io.andromeda/fragments.svg)](http://search.maven.org/#search|ga|1|io.andromeda)
 [![Javadocs](http://www.javadoc.io/badge/io.andromeda/fragments.svg)](http://www.javadoc.io/doc/io.andromeda/fragments)
 
