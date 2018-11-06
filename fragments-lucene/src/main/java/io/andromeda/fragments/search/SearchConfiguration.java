@@ -27,7 +27,7 @@ public class SearchConfiguration {
     private Analyzer analyzer;
     /** Instance of Lucene Directory. */
     private Directory directory;
-    /** Include invisible Fragments in the search index. Normally you want to set this to false. Default is false. */
+    /** Include invisible Fragments in the feeds index. Normally you want to set this to false. Default is false. */
     private boolean includingInvisible = false;
     private int maximumResults;
     private int hitsPerPage;

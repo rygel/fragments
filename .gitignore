@@ -47,3 +47,5 @@ fabric.propertie
 /.idea
 /fragments/src/test/resources/fragments/tests/*.db
 /fragments-lucene/target
+/fragments-rss/target
+/fragments-rss/feeds.xml

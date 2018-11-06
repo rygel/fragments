@@ -3,9 +3,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fragments-lucene</artifactId>
+    <artifactId>fragments-rss</artifactId>
     <url>https://github.com/rygel/fragments</url>
-    <description>Lucene add-on for fragments library.</description>
+    <description>RSS add-on for fragments library.</description>
 
     <parent>
         <artifactId>fragments-parent</artifactId>
@@ -20,19 +20,9 @@
             <version>0.0.23-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>${lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-            <version>${lucene.version}</version>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.11.1</version>
         </dependency>
     </dependencies>
 

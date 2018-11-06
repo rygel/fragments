@@ -41,7 +41,7 @@ public class FragmentsLuceneIndexTest extends Assert {
         FragmentsLuceneIndex fragmentsLuceneIndex = new FragmentsLuceneIndex(configuration);
         String currentPath = System.getProperty("user.dir");
         Configuration fragmentsConfiguration = new Configuration("Search", "/",
-                Paths.get(currentPath + "/src/test/resources/fragments/tests/search"), "", "");
+                Paths.get(currentPath + "/src/test/resources/fragments/tests/feeds"), "", "");
         Fragments fragments = new Fragments(new Application(), fragmentsConfiguration);
         fragmentsLuceneIndex.addFragments(fragments);
         fragmentsLuceneIndex.createIndex();

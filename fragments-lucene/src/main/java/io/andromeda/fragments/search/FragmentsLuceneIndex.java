@@ -57,7 +57,6 @@ public class FragmentsLuceneIndex {
     public static final String RESULTS_ID = "results";
 
     private SearchConfiguration configuration;
-    private IndexWriter indexWriter;
     private List<Fragments> fragmentsList = new ArrayList<>();
 
     /**
@@ -83,7 +82,7 @@ public class FragmentsLuceneIndex {
         try {
             IndexWriterConfig config = new IndexWriterConfig(configuration.getAnalyzer());
 
-            indexWriter = new IndexWriter(configuration.getDirectory(), config);
+            IndexWriter indexWriter = new IndexWriter(configuration.getDirectory(), config);
             for (Fragments fragments: fragmentsList) {
                 LOGGER.info("Creating index for fragments: {}", fragments.getName());
                 for (Fragment fragment: fragments.getFragments(configuration.getIncludingInvisible())) {
@@ -108,7 +107,7 @@ public class FragmentsLuceneIndex {
     }
 
     /*
-    public List<Document> search(int from, String queryString) {
+    public List<Document> feeds(int from, String queryString) {
         List<Document> result = new ArrayList<Document>();
         try {
             DirectoryReader reader = DirectoryReader.open(directory);
@@ -116,7 +115,7 @@ public class FragmentsLuceneIndex {
             TopScoreDocCollector collector = TopScoreDocCollector.create(maximumResults);  // MAX_RESULTS is just an int limiting the total number of hits
             int startIndex = (from - 1) * hitsPerPage;  // our page is 1 based - so we need to convert to zero based
             Query query = new QueryParser("content", analyzer).parse(queryString);
-            searcher.search(query, collector);
+            searcher.feeds(query, collector);
             TopDocs docs = collector.topDocs(startIndex, hitsPerPage);
             ScoreDoc[] hits = docs.scoreDocs;
             for (int i = 0; i < hitsPerPage; ++i) {
@@ -131,7 +130,7 @@ public class FragmentsLuceneIndex {
     }
     */
 
-    /*public TopDocs search(int from, String queryString) {
+    /*public TopDocs feeds(int from, String queryString) {
         TopDocs result = null;
         try {
             DirectoryReader reader = DirectoryReader.open(configuration.getDirectory());
@@ -139,7 +138,7 @@ public class FragmentsLuceneIndex {
             TopScoreDocCollector collector = TopScoreDocCollector.create(configuration.getMaximumResults());  // MAX_RESULTS is just an int limiting the total number of hits
             int startIndex = (from - 1) * configuration.getHitsPerPage();  // our page is 1 based - so we need to convert to zero based
             Query query = new QueryParser(CONTENT_ID, configuration.getAnalyzer()).parse(queryString);
-            searcher.search(query, collector);
+            searcher.feeds(query, collector);
             result = collector.topDocs(startIndex, configuration.getHitsPerPage());
         } catch (IOException|ParseException e) {
             LOGGER.error(e.toString());
@@ -171,7 +170,7 @@ public class FragmentsLuceneIndex {
                 resultMap.put(Integer.toString(i + 1), item);
                 //LOGGER.info("{}. {} [{}] [{}]", (i + 1), document.get("title"), document.get("preview"), document.get("full_url"));
             }
-            resultMap.put("results", hits.length);
+            resultMap.put(RESULTS_ID, hits.length);
             result.put(RESULTS_ID, resultMap);
         } catch (IOException|ParseException e) {
             LOGGER.error(e.toString());

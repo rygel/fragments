@@ -36,7 +36,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Updated flexmark to 0.32.12
 - Updated slf4j to 1.7.25
 - Added database support. Currently for embedded H2 database only.
-- Added preliminary full-text search support via Apachae Lucene.
+- Added preliminary full-text feeds support via Apachae Lucene.
 
 #### Added
 

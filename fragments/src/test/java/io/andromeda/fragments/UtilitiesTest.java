@@ -16,28 +16,28 @@ import static org.hamcrest.Matchers.equalTo;
 public class UtilitiesTest {
 
     @Test
-    public void testRemoveTrailingSlashRoot() throws Exception {
+    public void testRemoveTrailingSlashRoot() {
         String expected = "/";
         String result = Utilities.removeTrailingSlash("/");
         assertThat(expected, equalTo(result));
     }
 
     @Test
-    public void testRemoveTrailingSlashLevel1() throws Exception {
+    public void testRemoveTrailingSlashLevel1() {
         String expected = "blog";
         String result = Utilities.removeTrailingSlash("blog/");
         assertThat(expected, equalTo(result));
     }
 
     @Test
-    public void testRemoveTrailingSlashLevel3() throws Exception {
+    public void testRemoveTrailingSlashLevel3() {
         String expected = "/blog/test/local";
         String result = Utilities.removeTrailingSlash("/blog/test/local/");
         assertThat(expected, equalTo(result));
     }
 
     @Test
-    public void testRemoveTrailingSlashDoNothing() throws Exception {
+    public void testRemoveTrailingSlashDoNothing() {
         String expected = "/blog";
         String result = Utilities.removeTrailingSlash("/blog");
         assertThat(expected, equalTo(result));
@@ -51,7 +51,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage1Of10() throws Exception {
+    public void testCalculatePaginationPage1Of10() {
         Map<String, Object> context = Utilities.calculatePagination(1, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -133,7 +133,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage2Of10() throws Exception {
+    public void testCalculatePaginationPage2Of10() {
         Map<String, Object> context = Utilities.calculatePagination(2, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -215,7 +215,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage3Of10() throws Exception {
+    public void testCalculatePaginationPage3Of10() {
         Map<String, Object> context = Utilities.calculatePagination(3, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -297,7 +297,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage4Of10() throws Exception {
+    public void testCalculatePaginationPage4Of10() {
         Map<String, Object> context = Utilities.calculatePagination(4, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -379,7 +379,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage5Of10() throws Exception {
+    public void testCalculatePaginationPage5Of10() {
         Map<String, Object> context = Utilities.calculatePagination(5, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -461,7 +461,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage6Of10() throws Exception {
+    public void testCalculatePaginationPage6Of10() {
         Map<String, Object> context = Utilities.calculatePagination(6, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -543,7 +543,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage7Of10() throws Exception {
+    public void testCalculatePaginationPage7Of10() {
         Map<String, Object> context = Utilities.calculatePagination(7, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -625,7 +625,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage8Of10() throws Exception {
+    public void testCalculatePaginationPage8Of10() {
         Map<String, Object> context = Utilities.calculatePagination(8, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -707,7 +707,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage9Of10() throws Exception {
+    public void testCalculatePaginationPage9Of10() {
         Map<String, Object> context = Utilities.calculatePagination(9, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -789,7 +789,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationPage10Of10() throws Exception {
+    public void testCalculatePaginationPage10Of10() {
         Map<String, Object> context = Utilities.calculatePagination(10, 5, 100);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;
@@ -871,7 +871,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationFirstOf1Item() throws Exception {
+    public void testCalculatePaginationFirstOf1Item() {
         Map<String, Object> context = Utilities.calculatePagination(1, 5, 1);
         // The list has 5 items, 1 page and "first", "last" and "previous", "next"
         int expectedItems = 5;
@@ -925,7 +925,7 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void testCalculatePaginationFirstOf5Items() throws Exception {
+    public void testCalculatePaginationFirstOf5Items() {
         Map<String, Object> context = Utilities.calculatePagination(1, 5, 50);
         // The list has 9 items, 5 pages and "first", "last" and "previous", "next"
         int expectedItems = 9;

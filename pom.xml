@@ -20,6 +20,7 @@
         <module>fragments</module>
         <module>fragments-demo</module>
         <module>fragments-lucene</module>
+        <module>fragments-rss</module>
     </modules>
 
     <properties>
