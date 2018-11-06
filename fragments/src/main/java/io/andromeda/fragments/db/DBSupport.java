@@ -26,6 +26,7 @@ import org.sql2o.Query;
 import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -99,16 +100,10 @@ public class DBSupport {
         return executeQuery(dropTable);
     }
 
-    public void addClick(Fragment fragment) {
-        String sql = String.format("SELECT clicks FROM %s where name = ':name'", configuration.getDBName());
+    public long addClick(Fragment fragment) {
+        long clicks = getNumberOfClicks(fragment);
         String sqlInsert = String.format("insert into %s(name, clicks) values (:name, :clicks)", configuration.getDBName());
-
         try (Connection con = sql2o.open()) {
-            Long clicks = con.createQuery(sql)
-                    .addParameter("name", fragment.getFilename())
-                    .executeScalar(Long.class);
-
-
             con.createQuery(sqlInsert)
                     .addParameter("name", fragment.getFilename())
                     .addParameter("clicks", ++clicks)
@@ -118,6 +113,21 @@ public class DBSupport {
         } catch (Exception exception) {
             LOGGER.error("Exception: {}", exception);
         }
+
+        return clicks;
+    }
+
+    public long getNumberOfClicks(Fragment fragment) {
+        long clicks = 0;
+        String sql = String.format("SELECT clicks FROM %s where name = ':name'", configuration.getDBName());
+        try (Connection con = sql2o.open()) {
+             clicks = con.createQuery(sql)
+                    .addParameter("name", fragment.getFilename())
+                    .executeScalar(Long.class);
+        } catch (Exception exception) {
+            LOGGER.error("Exception getting number of clicks: {}", exception);
+        }
+        return clicks;
     }
 
     public List<Fragment> getTopFragments() {
@@ -146,7 +156,7 @@ public class DBSupport {
         Author a = author.get(0);
         return true;*/
 
-        return null;
+        return Collections.emptyList();
     }
 
     /*private static void insertWithPreparedStatement() throws SQLException {

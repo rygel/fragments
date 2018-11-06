@@ -189,7 +189,7 @@ public class Fragments {
                 context.putAll(configuration.getDynamicContext(context));
                 if (dbsupport != null) {
                     context.put("top_fragments", dbsupport.getTopFragments());
-                    dbsupport.addClick(fragment);
+                    context.put("number_of_clicks", dbsupport.addClick(fragment));
                 }
                 context.put("lang", lang);
 
@@ -288,9 +288,9 @@ public class Fragments {
         defaultContext.putAll(newContext);
     }
 
-    public void enableDatabase(DBConfiguration dbConfiguration) {
+    public DBSupport enableDatabase(DBConfiguration dbConfiguration) {
         dbsupport = new DBSupport(dbConfiguration, this);
-
+        return dbsupport;
     }
 
     public String getDataDirectory() {
